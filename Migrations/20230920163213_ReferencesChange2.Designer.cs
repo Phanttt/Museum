@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Museum.Data;
 
@@ -11,9 +12,11 @@ using Museum.Data;
 namespace Museum.Migrations
 {
     [DbContext(typeof(MuseumContext))]
-    partial class MuseumContextModelSnapshot : ModelSnapshot
+    [Migration("20230920163213_ReferencesChange2")]
+    partial class ReferencesChange2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +60,6 @@ namespace Museum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("specFondNum")
-                        .HasColumnType("int");
-
                     b.Property<string>("type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -88,6 +88,12 @@ namespace Museum.Migrations
                     b.Property<int>("MaterialId")
                         .HasColumnType("int");
 
+                    b.Property<int>("accId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("matId")
+                        .HasColumnType("int");
+
                     b.HasKey("id");
 
                     b.HasIndex("Acceptanceid");
@@ -111,6 +117,12 @@ namespace Museum.Migrations
                     b.Property<int>("StateId")
                         .HasColumnType("int");
 
+                    b.Property<int>("accId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("statId")
+                        .HasColumnType("int");
+
                     b.HasKey("id");
 
                     b.HasIndex("Acceptanceid");
@@ -128,10 +140,16 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Acceptanceid")
+                    b.Property<int>("Acceptanceid")
                         .HasColumnType("int");
 
                     b.Property<int>("TechniqueId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("accId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("tecId")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -1997,7 +2015,9 @@ namespace Museum.Migrations
                 {
                     b.HasOne("Museum.Models.Acceptance", "Acceptance")
                         .WithMany("techniques")
-                        .HasForeignKey("Acceptanceid");
+                        .HasForeignKey("Acceptanceid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Museum.Models.Technique", "Technique")
                         .WithMany()

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Museum.Data;
 
@@ -11,9 +12,11 @@ using Museum.Data;
 namespace Museum.Migrations
 {
     [DbContext(typeof(MuseumContext))]
-    partial class MuseumContextModelSnapshot : ModelSnapshot
+    [Migration("20230920152437_LetterChange")]
+    partial class LetterChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +60,6 @@ namespace Museum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("specFondNum")
-                        .HasColumnType("int");
-
                     b.Property<string>("type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -74,75 +74,6 @@ namespace Museum.Migrations
                     b.ToTable("Acceptances");
                 });
 
-            modelBuilder.Entity("Museum.Models.BtwMatAcc", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("Acceptanceid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaterialId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("Acceptanceid");
-
-                    b.HasIndex("MaterialId");
-
-                    b.ToTable("BtwMatAccs");
-                });
-
-            modelBuilder.Entity("Museum.Models.BtwStatAcc", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("Acceptanceid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StateId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("Acceptanceid");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("BtwStatAccs");
-                });
-
-            modelBuilder.Entity("Museum.Models.BtwTecAcc", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int?>("Acceptanceid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TechniqueId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("Acceptanceid");
-
-                    b.HasIndex("TechniqueId");
-
-                    b.ToTable("BtwTecAccs");
-                });
-
             modelBuilder.Entity("Museum.Models.Material", b =>
                 {
                     b.Property<int>("Id")
@@ -151,11 +82,16 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("Acceptanceid")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Acceptanceid");
 
                     b.ToTable("Materials");
                 });
@@ -168,11 +104,16 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("Acceptanceid")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Acceptanceid");
 
                     b.ToTable("States");
                 });
@@ -1856,11 +1797,16 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("Acceptanceid")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Acceptanceid");
 
                     b.ToTable("Techniques");
                 });
@@ -1955,59 +1901,18 @@ namespace Museum.Migrations
                     b.Navigation("unifPassport");
                 });
 
-            modelBuilder.Entity("Museum.Models.BtwMatAcc", b =>
+            modelBuilder.Entity("Museum.Models.Material", b =>
                 {
-                    b.HasOne("Museum.Models.Acceptance", "Acceptance")
+                    b.HasOne("Museum.Models.Acceptance", null)
                         .WithMany("materials")
-                        .HasForeignKey("Acceptanceid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Material", "Material")
-                        .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Acceptance");
-
-                    b.Navigation("Material");
-                });
-
-            modelBuilder.Entity("Museum.Models.BtwStatAcc", b =>
-                {
-                    b.HasOne("Museum.Models.Acceptance", "Acceptance")
-                        .WithMany("states")
-                        .HasForeignKey("Acceptanceid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Acceptance");
-
-                    b.Navigation("State");
-                });
-
-            modelBuilder.Entity("Museum.Models.BtwTecAcc", b =>
-                {
-                    b.HasOne("Museum.Models.Acceptance", "Acceptance")
-                        .WithMany("techniques")
                         .HasForeignKey("Acceptanceid");
+                });
 
-                    b.HasOne("Museum.Models.Technique", "Technique")
-                        .WithMany()
-                        .HasForeignKey("TechniqueId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Acceptance");
-
-                    b.Navigation("Technique");
+            modelBuilder.Entity("Museum.Models.State", b =>
+                {
+                    b.HasOne("Museum.Models.Acceptance", null)
+                        .WithMany("states")
+                        .HasForeignKey("Acceptanceid");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Info.City", b =>
@@ -2372,6 +2277,13 @@ namespace Museum.Migrations
                     b.Navigation("DragMetal");
 
                     b.Navigation("Weapon");
+                });
+
+            modelBuilder.Entity("Museum.Models.Technique", b =>
+                {
+                    b.HasOne("Museum.Models.Acceptance", null)
+                        .WithMany("techniques")
+                        .HasForeignKey("Acceptanceid");
                 });
 
             modelBuilder.Entity("Museum.Models.UnifPassport", b =>

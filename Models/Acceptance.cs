@@ -5,31 +5,32 @@ namespace Museum.Models
     public class Acceptance
     {
         [Key]
-        public int Id { get; set; } //номер по книге приема
-        public int InventoryN { get; set; }  //инвентарный номер
-        public int InsideN { get; set; } //внутренний номер
+        public int id { get; set; } //номер по книге приема
+        public int inventoryN { get; set; }  //инвентарный номер
+        public int insideN { get; set; } //внутренний номер
+        public int specFondNum { get; set; } 
 
         [Required]
-        public string Name { get; set; }
+        public string name { get; set; }
         [Required]
-        public string ShortDescription { get; set; }
+        public string shortDescription { get; set; }
         [Required]
-        public string Type { get; set; }
+        public string type { get; set; }
         [Required]
-        public bool IsSpecFond { get; set; }
+        public bool isSpecFond { get; set; }
         [Required]
-        public bool IsWeapon { get; set; }
+        public bool isWeapon { get; set; }
         [Required]
-        public bool IsDragMetal { get; set; }
+        public bool isDragMetal { get; set; }
         [Required]
-        public string Size { get; set; }
+        public string size { get; set; }
         
-        public  ICollection<Material>? materials { get; set; }
+        public ICollection<BtwMatAcc>? materials { get; set; }
         
-        public  ICollection<State>? states { get; set; }
+        public ICollection<BtwStatAcc>? states { get; set; }
         
-        public  ICollection<Technique>? techniques { get; set; }
+        public ICollection<BtwTecAcc>? techniques { get; set; }
 
-        public UnifPassport? UnifPassport { get; set; }
+        public UnifPassport? unifPassport { get; set; }
     }
 }

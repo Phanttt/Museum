@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Museum.Data;
 
@@ -11,9 +12,11 @@ using Museum.Data;
 namespace Museum.Migrations
 {
     [DbContext(typeof(MuseumContext))]
-    partial class MuseumContextModelSnapshot : ModelSnapshot
+    [Migration("20230920155112_ReferencesChange")]
+    partial class ReferencesChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +60,6 @@ namespace Museum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("specFondNum")
-                        .HasColumnType("int");
-
                     b.Property<string>("type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -88,13 +88,19 @@ namespace Museum.Migrations
                     b.Property<int>("MaterialId")
                         .HasColumnType("int");
 
+                    b.Property<int>("accId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("matId")
+                        .HasColumnType("int");
+
                     b.HasKey("id");
 
                     b.HasIndex("Acceptanceid");
 
                     b.HasIndex("MaterialId");
 
-                    b.ToTable("BtwMatAccs");
+                    b.ToTable("BtwMatAcc");
                 });
 
             modelBuilder.Entity("Museum.Models.BtwStatAcc", b =>
@@ -111,13 +117,19 @@ namespace Museum.Migrations
                     b.Property<int>("StateId")
                         .HasColumnType("int");
 
+                    b.Property<int>("accId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("statId")
+                        .HasColumnType("int");
+
                     b.HasKey("id");
 
                     b.HasIndex("Acceptanceid");
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("BtwStatAccs");
+                    b.ToTable("BtwStatAcc");
                 });
 
             modelBuilder.Entity("Museum.Models.BtwTecAcc", b =>
@@ -128,10 +140,16 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Acceptanceid")
+                    b.Property<int>("Acceptanceid")
                         .HasColumnType("int");
 
                     b.Property<int>("TechniqueId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("accId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("tecId")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -140,7 +158,7 @@ namespace Museum.Migrations
 
                     b.HasIndex("TechniqueId");
 
-                    b.ToTable("BtwTecAccs");
+                    b.ToTable("BtwTecAcc");
                 });
 
             modelBuilder.Entity("Museum.Models.Material", b =>
@@ -1964,7 +1982,7 @@ namespace Museum.Migrations
                         .IsRequired();
 
                     b.HasOne("Museum.Models.Material", "Material")
-                        .WithMany()
+                        .WithMany("materials")
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1983,7 +2001,7 @@ namespace Museum.Migrations
                         .IsRequired();
 
                     b.HasOne("Museum.Models.State", "State")
-                        .WithMany()
+                        .WithMany("states")
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1997,10 +2015,12 @@ namespace Museum.Migrations
                 {
                     b.HasOne("Museum.Models.Acceptance", "Acceptance")
                         .WithMany("techniques")
-                        .HasForeignKey("Acceptanceid");
+                        .HasForeignKey("Acceptanceid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Museum.Models.Technique", "Technique")
-                        .WithMany()
+                        .WithMany("techniques")
                         .HasForeignKey("TechniqueId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2425,6 +2445,16 @@ namespace Museum.Migrations
                     b.Navigation("techniques");
                 });
 
+            modelBuilder.Entity("Museum.Models.Material", b =>
+                {
+                    b.Navigation("materials");
+                });
+
+            modelBuilder.Entity("Museum.Models.State", b =>
+                {
+                    b.Navigation("states");
+                });
+
             modelBuilder.Entity("Museum.Models.Tabs.Info.Complex", b =>
                 {
                     b.Navigation("AdditionsItems");
@@ -2480,6 +2510,11 @@ namespace Museum.Migrations
                     b.Navigation("Sructures");
 
                     b.Navigation("peoples");
+                });
+
+            modelBuilder.Entity("Museum.Models.Technique", b =>
+                {
+                    b.Navigation("techniques");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Museum.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,8 +37,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(builder => builder
+   .SetIsOriginAllowed(_ => true)
+   .AllowAnyMethod()
+   .AllowAnyHeader()
+   .AllowCredentials());
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
