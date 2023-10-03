@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Museum.Data;
 using Museum.Models;
 using Museum.Models.Tabs.Info;
+using Museum.Models.Tabs.Media;
 
 namespace Museum.Controllers
 {
@@ -17,49 +18,59 @@ namespace Museum.Controllers
             this.context = context;
         }
         [HttpPost("AcceptItem")]
-        public async Task<ActionResult<string>> AcceptItem([FromBody] AcceptRequest accReq)
+        public async Task<ActionResult<string>> AcceptItem([FromBody] Acceptance acceptance)
         {
-            Acceptance acceptance = new Acceptance();
-            acceptance.name = accReq.name;
-            acceptance.type = accReq.type;
-            acceptance.shortDescription = accReq.shortDescription;
-            acceptance.inventoryN = accReq.inventoryN;
-            acceptance.insideN = accReq.insideN;
-            acceptance.size = accReq.size;  
-            acceptance.isDragMetal = accReq.isDragMetal;
-            acceptance.isSpecFond = accReq.isSpecFond;
-            acceptance.isWeapon = accReq.isWeapon;
-            acceptance.specFondNum = accReq.specFondNum;
-
-
-            List<BtwMatAcc> btwMatAcc = new List<BtwMatAcc>();
-            foreach (var item in accReq.materials)
+            Acceptance existedAcc = await context.Acceptances.FirstOrDefaultAsync(x=>x.id == acceptance.id);
+            if (existedAcc!=null)
             {
-                Material mat = await context.Materials.FindAsync(item.Id);
-                btwMatAcc.Add(new BtwMatAcc() { Material = mat, Acceptance = acceptance});
+                return BadRequest("Експонат вже існує з таким номером по книзі прийому");
+            }
+            existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.inventoryN == acceptance.inventoryN);
+            if (existedAcc != null)
+            {
+                return BadRequest("Експонат вже існує з таким інвентарним номером");
+            }
+            existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.insideN == acceptance.insideN);
+            if (existedAcc != null)
+            {
+                return BadRequest("Експонат вже існує з таким внутрішнім номером");
             }
 
-            List<BtwStatAcc> btwStatAcc = new List<BtwStatAcc>();
-            foreach (var item in accReq.states)
+            int maxInventoryN = await context.Acceptances.MaxAsync(x=>x.inventoryN);
+            int maxInsideN = await context.Acceptances.MaxAsync(x=>x.insideN);
+
+            if (acceptance.inventoryN == 0 )
             {
-                State stat = await context.States.FindAsync(item.Id);
-                btwStatAcc.Add(new BtwStatAcc() { State = stat, Acceptance = acceptance });
+                acceptance.inventoryN = maxInventoryN + 1;
             }
 
-            List<BtwTecAcc> btwTecAcc = new List<BtwTecAcc>();
-            foreach (var item in accReq.techniques)
+            if (acceptance.insideN == 0)
             {
-                Technique tech = await context.Techniques.FindAsync(item.Id);
-                btwTecAcc.Add(new BtwTecAcc() { Technique = tech, Acceptance = acceptance });
+                acceptance.insideN = maxInsideN + 1;
             }
 
-            acceptance.materials = btwMatAcc;
-            acceptance.states = btwStatAcc;
-            acceptance.techniques = btwTecAcc;
+            UnifPassport unifPassport = new UnifPassport();
+            acceptance.unifPassport = unifPassport;
 
-            await context.BtwMatAccs.AddRangeAsync(acceptance.materials);
-            await context.BtwStatAccs.AddRangeAsync(acceptance.states);
-            await context.BtwTecAccs.AddRangeAsync(acceptance.techniques);
+            foreach (var material in acceptance.materials)
+            {
+                context.Entry(material).State = EntityState.Unchanged;
+            }
+
+            foreach (var material in acceptance.techniques)
+            {
+                context.Entry(material).State = EntityState.Unchanged;
+            }
+
+            foreach (var material in acceptance.states)
+            {
+                context.Entry(material).State = EntityState.Unchanged;
+            }
+
+
+            //acceptance.materials = btwMatAcc;
+            //acceptance.states = btwStatAcc;
+            //acceptance.techniques = btwTecAcc;
 
             await context.Acceptances.AddAsync(acceptance);
 
@@ -83,5 +94,6 @@ namespace Museum.Controllers
         {
             return await context.Techniques.ToListAsync();
         }
+
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Museum.Data;
 
@@ -11,9 +12,11 @@ using Museum.Data;
 namespace Museum.Migrations
 {
     [DbContext(typeof(MuseumContext))]
-    partial class MuseumContextModelSnapshot : ModelSnapshot
+    [Migration("20231003141351_MediaRowsChanged")]
+    partial class MediaRowsChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2304,9 +2307,11 @@ namespace Museum.Migrations
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Image", b =>
                 {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
+                    b.HasOne("Museum.Models.Tabs.Media.Media", "Media")
                         .WithMany("Images")
                         .HasForeignKey("Mediaid");
+
+                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Media", b =>

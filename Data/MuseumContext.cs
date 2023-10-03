@@ -97,10 +97,9 @@ namespace Museum.Data
         public DbSet<Material> Materials { get; set; }
         public DbSet<State> States { get; set; }
         public DbSet<Technique> Techniques { get; set; }
-        public DbSet<BtwMatAcc> BtwMatAccs { get; set; }
-        public DbSet<BtwStatAcc> BtwStatAccs { get; set; }
-        public DbSet<BtwTecAcc> BtwTecAccs { get; set; }
         public DbSet<UnifPassport> UnifPassports { get; set; }
+
+        public DbSet<GeneralInfo> GeneralInfo { get; set; }
 
     }
 }

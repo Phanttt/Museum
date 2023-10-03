@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Museum.Data;
 
@@ -11,9 +12,11 @@ using Museum.Data;
 namespace Museum.Migrations
 {
     [DbContext(typeof(MuseumContext))]
-    partial class MuseumContextModelSnapshot : ModelSnapshot
+    [Migration("20230929134246_ChangeInImage")]
+    partial class ChangeInImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,51 +24,6 @@ namespace Museum.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("AcceptanceMaterial", b =>
-                {
-                    b.Property<int>("acceptancesid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("materialsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("acceptancesid", "materialsId");
-
-                    b.HasIndex("materialsId");
-
-                    b.ToTable("AcceptanceMaterial");
-                });
-
-            modelBuilder.Entity("AcceptanceState", b =>
-                {
-                    b.Property<int>("acceptancesid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("statesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("acceptancesid", "statesId");
-
-                    b.HasIndex("statesId");
-
-                    b.ToTable("AcceptanceState");
-                });
-
-            modelBuilder.Entity("AcceptanceTechnique", b =>
-                {
-                    b.Property<int>("acceptancesid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("techniquesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("acceptancesid", "techniquesId");
-
-                    b.HasIndex("techniquesId");
-
-                    b.ToTable("AcceptanceTechnique");
-                });
 
             modelBuilder.Entity("Museum.Models.Acceptance", b =>
                 {
@@ -117,6 +75,75 @@ namespace Museum.Migrations
                     b.HasIndex("unifPassportId");
 
                     b.ToTable("Acceptances");
+                });
+
+            modelBuilder.Entity("Museum.Models.BtwMatAcc", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("Acceptanceid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Acceptanceid");
+
+                    b.HasIndex("MaterialId");
+
+                    b.ToTable("BtwMatAccs");
+                });
+
+            modelBuilder.Entity("Museum.Models.BtwStatAcc", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("Acceptanceid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Acceptanceid");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("BtwStatAccs");
+                });
+
+            modelBuilder.Entity("Museum.Models.BtwTecAcc", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int?>("Acceptanceid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TechniqueId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Acceptanceid");
+
+                    b.HasIndex("TechniqueId");
+
+                    b.ToTable("BtwTecAccs");
                 });
 
             modelBuilder.Entity("Museum.Models.Material", b =>
@@ -1183,9 +1210,6 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Mediaid")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("data")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -1203,8 +1227,6 @@ namespace Museum.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Mediaid");
 
                     b.ToTable("Audios");
                 });
@@ -1217,9 +1239,6 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Mediaid")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("data")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -1237,8 +1256,6 @@ namespace Museum.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Mediaid");
 
                     b.ToTable("Documents");
                 });
@@ -1257,6 +1274,9 @@ namespace Museum.Migrations
                     b.Property<string>("copyrightHolder")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("mediaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("photographer")
                         .IsRequired()
@@ -1277,6 +1297,9 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<int>("GeneralInfoid")
+                        .HasColumnType("int");
+
                     b.Property<int?>("Mediaid")
                         .HasColumnType("int");
 
@@ -1295,11 +1318,9 @@ namespace Museum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("id");
+
+                    b.HasIndex("GeneralInfoid");
 
                     b.HasIndex("Mediaid");
 
@@ -1331,12 +1352,7 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("GeneralInfoid")
-                        .HasColumnType("int");
-
                     b.HasKey("id");
-
-                    b.HasIndex("GeneralInfoid");
 
                     b.ToTable("Medias");
                 });
@@ -1348,9 +1364,6 @@ namespace Museum.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int?>("Mediaid")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("data")
                         .IsRequired()
@@ -1369,8 +1382,6 @@ namespace Museum.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Mediaid");
 
                     b.ToTable("Videos");
                 });
@@ -1990,51 +2001,6 @@ namespace Museum.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("AcceptanceMaterial", b =>
-                {
-                    b.HasOne("Museum.Models.Acceptance", null)
-                        .WithMany()
-                        .HasForeignKey("acceptancesid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Material", null)
-                        .WithMany()
-                        .HasForeignKey("materialsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AcceptanceState", b =>
-                {
-                    b.HasOne("Museum.Models.Acceptance", null)
-                        .WithMany()
-                        .HasForeignKey("acceptancesid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.State", null)
-                        .WithMany()
-                        .HasForeignKey("statesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AcceptanceTechnique", b =>
-                {
-                    b.HasOne("Museum.Models.Acceptance", null)
-                        .WithMany()
-                        .HasForeignKey("acceptancesid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Technique", null)
-                        .WithMany()
-                        .HasForeignKey("techniquesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Museum.Models.Acceptance", b =>
                 {
                     b.HasOne("Museum.Models.UnifPassport", "unifPassport")
@@ -2042,6 +2008,61 @@ namespace Museum.Migrations
                         .HasForeignKey("unifPassportId");
 
                     b.Navigation("unifPassport");
+                });
+
+            modelBuilder.Entity("Museum.Models.BtwMatAcc", b =>
+                {
+                    b.HasOne("Museum.Models.Acceptance", "Acceptance")
+                        .WithMany("materials")
+                        .HasForeignKey("Acceptanceid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Museum.Models.Material", "Material")
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Acceptance");
+
+                    b.Navigation("Material");
+                });
+
+            modelBuilder.Entity("Museum.Models.BtwStatAcc", b =>
+                {
+                    b.HasOne("Museum.Models.Acceptance", "Acceptance")
+                        .WithMany("states")
+                        .HasForeignKey("Acceptanceid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Museum.Models.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Acceptance");
+
+                    b.Navigation("State");
+                });
+
+            modelBuilder.Entity("Museum.Models.BtwTecAcc", b =>
+                {
+                    b.HasOne("Museum.Models.Acceptance", "Acceptance")
+                        .WithMany("techniques")
+                        .HasForeignKey("Acceptanceid");
+
+                    b.HasOne("Museum.Models.Technique", "Technique")
+                        .WithMany()
+                        .HasForeignKey("TechniqueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Acceptance");
+
+                    b.Navigation("Technique");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Info.City", b =>
@@ -2277,20 +2298,6 @@ namespace Museum.Migrations
                     b.Navigation("Exposition");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Audio", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
-                        .WithMany("Audios")
-                        .HasForeignKey("Mediaid");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Document", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
-                        .WithMany("Documents")
-                        .HasForeignKey("Mediaid");
-                });
-
             modelBuilder.Entity("Museum.Models.Tabs.Media.GeneralInfo", b =>
                 {
                     b.HasOne("Museum.Models.Tabs.Media.ImageRight", "ImageRight")
@@ -2304,27 +2311,19 @@ namespace Museum.Migrations
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Image", b =>
                 {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
-                        .WithMany("Images")
-                        .HasForeignKey("Mediaid");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Media", b =>
-                {
                     b.HasOne("Museum.Models.Tabs.Media.GeneralInfo", "GeneralInfo")
                         .WithMany()
                         .HasForeignKey("GeneralInfoid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GeneralInfo");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Video", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
-                        .WithMany("Videos")
+                    b.HasOne("Museum.Models.Tabs.Media.Media", "Media")
+                        .WithMany()
                         .HasForeignKey("Mediaid");
+
+                    b.Navigation("GeneralInfo");
+
+                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Receiving.Event", b =>
@@ -2497,6 +2496,15 @@ namespace Museum.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Museum.Models.Acceptance", b =>
+                {
+                    b.Navigation("materials");
+
+                    b.Navigation("states");
+
+                    b.Navigation("techniques");
+                });
+
             modelBuilder.Entity("Museum.Models.Tabs.Info.Complex", b =>
                 {
                     b.Navigation("AdditionsItems");
@@ -2531,17 +2539,6 @@ namespace Museum.Migrations
                     b.Navigation("ItemDamage");
 
                     b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Media", b =>
-                {
-                    b.Navigation("Audios");
-
-                    b.Navigation("Documents");
-
-                    b.Navigation("Images");
-
-                    b.Navigation("Videos");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Receiving.People", b =>

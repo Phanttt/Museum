@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Museum.Data;
 
@@ -11,9 +12,11 @@ using Museum.Data;
 namespace Museum.Migrations
 {
     [DbContext(typeof(MuseumContext))]
-    partial class MuseumContextModelSnapshot : ModelSnapshot
+    [Migration("20231003133424_ManyToManyRef3")]
+    partial class ManyToManyRef3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1183,9 +1186,6 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Mediaid")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("data")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -1203,8 +1203,6 @@ namespace Museum.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Mediaid");
 
                     b.ToTable("Audios");
                 });
@@ -1217,9 +1215,6 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Mediaid")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("data")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -1237,8 +1232,6 @@ namespace Museum.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Mediaid");
 
                     b.ToTable("Documents");
                 });
@@ -1257,6 +1250,9 @@ namespace Museum.Migrations
                     b.Property<string>("copyrightHolder")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("mediaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("photographer")
                         .IsRequired()
@@ -1331,12 +1327,7 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("GeneralInfoid")
-                        .HasColumnType("int");
-
                     b.HasKey("id");
-
-                    b.HasIndex("GeneralInfoid");
 
                     b.ToTable("Medias");
                 });
@@ -1348,9 +1339,6 @@ namespace Museum.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int?>("Mediaid")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("data")
                         .IsRequired()
@@ -1369,8 +1357,6 @@ namespace Museum.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Mediaid");
 
                     b.ToTable("Videos");
                 });
@@ -2277,20 +2263,6 @@ namespace Museum.Migrations
                     b.Navigation("Exposition");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Audio", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
-                        .WithMany("Audios")
-                        .HasForeignKey("Mediaid");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Document", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
-                        .WithMany("Documents")
-                        .HasForeignKey("Mediaid");
-                });
-
             modelBuilder.Entity("Museum.Models.Tabs.Media.GeneralInfo", b =>
                 {
                     b.HasOne("Museum.Models.Tabs.Media.ImageRight", "ImageRight")
@@ -2304,27 +2276,11 @@ namespace Museum.Migrations
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Image", b =>
                 {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
-                        .WithMany("Images")
-                        .HasForeignKey("Mediaid");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Media", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.GeneralInfo", "GeneralInfo")
+                    b.HasOne("Museum.Models.Tabs.Media.Media", "Media")
                         .WithMany()
-                        .HasForeignKey("GeneralInfoid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("GeneralInfo");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Video", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", null)
-                        .WithMany("Videos")
                         .HasForeignKey("Mediaid");
+
+                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Receiving.Event", b =>
@@ -2531,17 +2487,6 @@ namespace Museum.Migrations
                     b.Navigation("ItemDamage");
 
                     b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Media", b =>
-                {
-                    b.Navigation("Audios");
-
-                    b.Navigation("Documents");
-
-                    b.Navigation("Images");
-
-                    b.Navigation("Videos");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Receiving.People", b =>

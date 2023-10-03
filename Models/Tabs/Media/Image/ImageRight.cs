@@ -5,7 +5,7 @@ namespace Museum.Models.Tabs.Media
     public class ImageRight
     {
         [Key]
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
     }
 }

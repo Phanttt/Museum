@@ -25,11 +25,11 @@ namespace Museum.Models
         [Required]
         public string size { get; set; }
         
-        public ICollection<BtwMatAcc>? materials { get; set; }
+        public ICollection<Material> materials { get; set; }
         
-        public ICollection<BtwStatAcc>? states { get; set; }
+        public ICollection<State> states { get; set; }
         
-        public ICollection<BtwTecAcc>? techniques { get; set; }
+        public ICollection<Technique> techniques { get; set; }
 
         public UnifPassport? unifPassport { get; set; }
     }

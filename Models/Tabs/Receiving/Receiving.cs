@@ -13,25 +13,27 @@ namespace Museum.Models.Tabs.Receiving
         [Required]
         public Provider Provider { get; set; }
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime date { get; set; }
         [Required]
         public ReceiveWay ReceiveWay { get; set; }
         [Required]
         public Purpose Purpose { get; set; }
         [Required]
-        public byte[] ReceiptAct { get; set; }
+        public byte[] receiptAct { get; set; }
         [Required]
-        public byte[] ReceiptAgreement { get; set; }
+        public byte[] receiptAgreement { get; set; }
 
 
-        public decimal Price { get; set; }
-        public byte[] PriceAct { get; set; }
-        public DateTime PeriodFrom { get; set; }
-        public DateTime PeriodTo { get; set; }
-        public ICollection<Structure> Sructures { get; set; }
-        public Producer Producers { get; set; }
+        public decimal price { get; set; }
+        public Currency Currency { get; set; }
+        public byte[] priceAct { get; set; }
+        public DateTime periodFrom { get; set; }
+        public DateTime periodTo { get; set; }
+        public ICollection<Structure> structures { get; set; }
+        public Producer Producer { get; set; }
         public ICollection<People>  peoples{ get; set; }
 
-        public ICollection<Event> Events { get; set; }
+        public ICollection<Event> events { get; set; }
+        public string DescriptionFP { get; set; }
     }
 }

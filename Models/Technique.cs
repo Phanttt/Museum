@@ -8,5 +8,6 @@ namespace Museum.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public ICollection<Acceptance>? acceptances { get; set; }
     }
 }

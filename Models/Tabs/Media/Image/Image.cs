@@ -5,14 +5,13 @@ namespace Museum.Models.Tabs.Media
     public class Image
     {
         [Key]
-        public int Id { get; set; }
-        public byte[] Data { get; set; }
-        public string Link{ get; set; }
-        public string Description { get; set; }
-        public bool IsMain { get; set; }
-        public string Photographer { get; set; }
-        public string CopyrightHolder { get; set; }
-        public ImageRight ImageRight { get; set; }
+        public int id { get; set; }
+        public string title { get; set; }
+        public byte[] data { get; set; }
+        public string link{ get; set; }
+        public string description { get; set; }
+        public bool isMain { get; set; }
 
+        ICollection<Media> Medias { get; set; }
     }
 }

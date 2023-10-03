@@ -5,10 +5,12 @@ namespace Museum.Models.Tabs.Media
     public class Video
     {
         [Key]
-        public int Id { get; set; }
-        public byte[] Data { get; set; }
-        public string Link { get; set; }
-        public string Description { get; set; }
-        public string Note { get; set; }
+        public int id { get; set; }
+        public byte[] data { get; set; }
+        public string link { get; set; }
+        public string description { get; set; }
+        public string note { get; set; }
+
+        ICollection<Media> Medias { get; set; }
     }
 }
