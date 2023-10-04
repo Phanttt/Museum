@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Museum.Data;
+using Museum.Data.ObjsForMediaRequests;
 using Museum.Models;
 using Museum.Models.Tabs.Media;
 
@@ -15,23 +16,6 @@ namespace Museum.Controllers
         public MediaController(MuseumContext context)
         {
             this.context = context;
-        }
-
-        async Task<int> isMediaExist(int id)
-        {
-            UnifPassport unifPassport = await context.UnifPassports.FirstOrDefaultAsync(x => x.Id == id);
-
-            Media media = unifPassport.Media;
-            if (media == null)
-            {
-                Media newmed = new Media();
-                await context.Medias.AddAsync(newmed);
-                unifPassport.Media = newmed;
-                await context.SaveChangesAsync();
-                return newmed.id;
-            }
-
-            return media.id;
         }
 
         [HttpGet("GetImageRights")]
@@ -59,17 +43,37 @@ namespace Museum.Controllers
                 media.GeneralInfo = info;
             }
 
-            
-
-
             await context.SaveChangesAsync();
             return Ok();
         }
         [HttpPost("AddImages")]
-        public async Task<ActionResult> AddImages(Image image)
+        public async Task<ActionResult> AddImages(ImageObj imageObj)
         {
+            Image image = imageObj.img;
+            image.data = imageObj.imageBytes.ToArray();
 
+            await context.Images.AddAsync(image);
+
+            UnifPassport unifPassport = await context.UnifPassports
+                .Include(x=>x.Media)
+                .FirstOrDefaultAsync(x => x.Id == image.unifPassportId);
+
+            Media media = unifPassport.Media;
+            if (media == null)
+            {
+                Media newmed = new Media();
+                newmed.Images.Add(image);
+                await context.Medias.AddAsync(newmed);
+                unifPassport.Media = newmed;
+            }
+            else
+            {
+                media.Images.Add(image);
+            }
+
+            await context.SaveChangesAsync();
             return Ok();
         }
+    
     }
 }

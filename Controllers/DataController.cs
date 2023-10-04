@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Museum.Data;
+using Museum.Data.ObjsForMediaRequests;
 using Museum.Models;
 using Museum.Models.Tabs.Info;
 using Museum.Models.Tabs.Media;
@@ -20,8 +21,8 @@ namespace Museum.Controllers
         [HttpPost("AcceptItem")]
         public async Task<ActionResult<string>> AcceptItem([FromBody] Acceptance acceptance)
         {
-            Acceptance existedAcc = await context.Acceptances.FirstOrDefaultAsync(x=>x.id == acceptance.id);
-            if (existedAcc!=null)
+            Acceptance existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.id == acceptance.id);
+            if (existedAcc != null)
             {
                 return BadRequest("Експонат вже існує з таким номером по книзі прийому");
             }
@@ -36,10 +37,10 @@ namespace Museum.Controllers
                 return BadRequest("Експонат вже існує з таким внутрішнім номером");
             }
 
-            int maxInventoryN = await context.Acceptances.MaxAsync(x=>x.inventoryN);
-            int maxInsideN = await context.Acceptances.MaxAsync(x=>x.insideN);
+            int maxInventoryN = await context.Acceptances.MaxAsync(x => x.inventoryN);
+            int maxInsideN = await context.Acceptances.MaxAsync(x => x.insideN);
 
-            if (acceptance.inventoryN == 0 )
+            if (acceptance.inventoryN == 0)
             {
                 acceptance.inventoryN = maxInventoryN + 1;
             }
@@ -94,6 +95,29 @@ namespace Museum.Controllers
         {
             return await context.Techniques.ToListAsync();
         }
+        [HttpGet("GetAllObjects")]
+        public async Task<IEnumerable<Acceptance>> GetAllObjects()
+        {
+            List<Acceptance> acceptances = await context.Acceptances
+             .Include(x => x.unifPassport)
+             .ThenInclude(x => x.Media)
+             .ThenInclude(x => x.Images)
+             .Where(x => x.unifPassport.Media.Images.Any(img => img.isMain == true))
+             .ToListAsync();
 
+            return acceptances;
+        }
+        [HttpGet("GetObjectById")]
+        public async Task<Acceptance> GetObjectById(int id)
+        {
+            Acceptance acceptance = await context.Acceptances
+             .Where(x=>x.id == id)
+             .Include(x => x.unifPassport)
+             .ThenInclude(x => x.Media)
+             .ThenInclude(x => x.Images)
+             .FirstOrDefaultAsync();
+
+            return acceptance;
+        }
     }
 }
