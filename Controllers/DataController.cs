@@ -106,6 +106,9 @@ namespace Museum.Controllers
         {
             Acceptance acceptance = await context.Acceptances
              .Where(x => x.id == id)
+             .Include(x=>x.materials)
+             .Include(x=>x.states)
+             .Include(x=>x.techniques)
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)
