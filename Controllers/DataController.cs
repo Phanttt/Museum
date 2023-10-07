@@ -19,7 +19,7 @@ namespace Museum.Controllers
             this.context = context;
         }
         [HttpPost("AcceptItem")]
-        public async Task<ActionResult<string>> AcceptItem([FromBody] Acceptance acceptance)
+        public async Task<ActionResult<int>> AcceptItem([FromBody] Acceptance acceptance)
         {
             Acceptance existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.id == acceptance.id);
             if (existedAcc != null)
@@ -37,16 +37,15 @@ namespace Museum.Controllers
                 return BadRequest("Експонат вже існує з таким внутрішнім номером");
             }
 
-            int maxInventoryN = await context.Acceptances.MaxAsync(x => x.inventoryN);
-            int maxInsideN = await context.Acceptances.MaxAsync(x => x.insideN);
-
             if (acceptance.inventoryN == 0)
             {
+                int maxInventoryN = await context.Acceptances.MaxAsync(x => x.inventoryN);
                 acceptance.inventoryN = maxInventoryN + 1;
             }
 
             if (acceptance.insideN == 0)
             {
+                int maxInsideN = await context.Acceptances.MaxAsync(x => x.insideN);
                 acceptance.insideN = maxInsideN + 1;
             }
 
@@ -68,15 +67,10 @@ namespace Museum.Controllers
                 context.Entry(material).State = EntityState.Unchanged;
             }
 
-
-            //acceptance.materials = btwMatAcc;
-            //acceptance.states = btwStatAcc;
-            //acceptance.techniques = btwTecAcc;
-
             await context.Acceptances.AddAsync(acceptance);
 
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(acceptance.id);
         }
 
         [HttpGet("GetMaterials")]
@@ -102,7 +96,7 @@ namespace Museum.Controllers
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)
-             .Where(x => x.unifPassport.Media.Images.Any(img => img.isMain == true))
+             .Where(x => x.unifPassport.Media.Images.Count == 0 || x.unifPassport.Media.Images.Any(img => img.isMain == true))
              .ToListAsync();
 
             return acceptances;
@@ -111,13 +105,22 @@ namespace Museum.Controllers
         public async Task<Acceptance> GetObjectById(int id)
         {
             Acceptance acceptance = await context.Acceptances
-             .Where(x=>x.id == id)
+             .Where(x => x.id == id)
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)
              .FirstOrDefaultAsync();
 
             return acceptance;
+        }
+        [HttpDelete("DeleteObjectById")]
+        public async Task<IActionResult> DeleteObjectById(int id)
+        {
+            Acceptance acc = await context.Acceptances.FindAsync(id);
+            context.Acceptances.Remove(acc);
+            await context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
