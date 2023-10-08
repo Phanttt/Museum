@@ -5,6 +5,8 @@ using Museum.Data.ObjsForMediaRequests;
 using Museum.Models;
 using Museum.Models.Tabs.Info;
 using Museum.Models.Tabs.Media;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Museum.Controllers
 {
@@ -96,13 +98,13 @@ namespace Museum.Controllers
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)
-             .Where(x => x.unifPassport.Media.Images.Count == 0 || x.unifPassport.Media.Images.Any(img => img.isMain == true))
+             .Where(x => x.unifPassport.Media.Images.Count == 0 || (x.unifPassport.Media.Images.Any(img => img.isMain == true || x.unifPassport.Media.Images.Any(img => img.isMain == false))))
              .ToListAsync();
 
             return acceptances;
         }
         [HttpGet("GetObjectById")]
-        public async Task<Acceptance> GetObjectById(int id)
+        public async Task<string> GetObjectById(int id)
         {
             Acceptance acceptance = await context.Acceptances
              .Where(x => x.id == id)
@@ -114,13 +116,25 @@ namespace Museum.Controllers
              .ThenInclude(x => x.Images)
              .FirstOrDefaultAsync();
 
-            return acceptance;
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+            };
+
+            string json = JsonSerializer.Serialize(acceptance, options);
+
+            return json;
         }
         [HttpDelete("DeleteObjectById")]
         public async Task<IActionResult> DeleteObjectById(int id)
         {
-            Acceptance acc = await context.Acceptances.FindAsync(id);
+            
+            Acceptance acc = await context.Acceptances.Include(x => x.unifPassport).FirstOrDefaultAsync(x => x.id == id);
+            int passId = acc.unifPassport.Id;
             context.Acceptances.Remove(acc);
+            UnifPassport passport = await context.UnifPassports.FindAsync(passId);
+            context.UnifPassports.Remove(passport);
+
             await context.SaveChangesAsync();
 
             return Ok();

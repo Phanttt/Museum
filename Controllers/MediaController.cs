@@ -26,6 +26,8 @@ namespace Museum.Controllers
         [HttpPost("AddGeneralInfoImg")]
         public async Task<ActionResult> AddGeneralInfoImg(GeneralInfo info)
         {
+            context.Entry(info.ImageRight).State = EntityState.Unchanged;
+
             await context.GeneralInfo.AddAsync(info);
 
             UnifPassport unifPassport = await context.UnifPassports.FirstOrDefaultAsync(x => x.Id == info.unifPassportId);

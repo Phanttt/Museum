@@ -5,7 +5,7 @@ namespace Museum.Models
     public class Acceptance
     {
         [Key]
-        public int id { get; set; } //номер по книге приема
+        public int id { get; set; }  //номер по книге приема
         public int inventoryN { get; set; }  //инвентарный номер
         public int insideN { get; set; } //внутренний номер
         public int specFondNum { get; set; } 

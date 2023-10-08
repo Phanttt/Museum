@@ -9,7 +9,7 @@ namespace Museum.Models.Tabs.Media
         public int id { get; set; }
         public string title { get; set; }
         public byte[]? data { get; set; }
-        public string link { get; set; }
+        public string? link { get; set; }
         public string description { get; set; }
         public bool isMain { get; set; }
         [NotMapped]
