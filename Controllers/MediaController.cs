@@ -76,6 +76,18 @@ namespace Museum.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
-    
+
+        [HttpGet("GetGeneralInfoById")]
+        public async Task<GeneralInfo> GetGeneralInfoById(int id)
+        {
+            return await context.GeneralInfo.FirstOrDefaultAsync(x => x.id == id);
+        }
+
+        [HttpGet("GetAllImagesByMediaId")]
+        public async Task<IEnumerable<Image>> GetAllImagesByMediaId(int id)
+        {
+            Media media = await context.Medias.Include(x => x.Images).FirstOrDefaultAsync(x=>x.id == id);
+            return media.Images;
+        }
     }
 }

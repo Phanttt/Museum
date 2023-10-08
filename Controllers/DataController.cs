@@ -104,7 +104,7 @@ namespace Museum.Controllers
             return acceptances;
         }
         [HttpGet("GetObjectById")]
-        public async Task<string> GetObjectById(int id)
+        public async Task<Acceptance> GetObjectById(int id)
         {
             Acceptance acceptance = await context.Acceptances
              .Where(x => x.id == id)
@@ -116,24 +116,20 @@ namespace Museum.Controllers
              .ThenInclude(x => x.Images)
              .FirstOrDefaultAsync();
 
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.Preserve,
-            };
+            //var options = new JsonSerializerOptions
+            //{
+            //    ReferenceHandler = ReferenceHandler.Preserve,
+            //};
 
-            string json = JsonSerializer.Serialize(acceptance, options);
+            //string json = JsonSerializer.Serialize(acceptance, options);
 
-            return json;
+            return acceptance;
         }
         [HttpDelete("DeleteObjectById")]
         public async Task<IActionResult> DeleteObjectById(int id)
         {
-            
-            Acceptance acc = await context.Acceptances.Include(x => x.unifPassport).FirstOrDefaultAsync(x => x.id == id);
-            int passId = acc.unifPassport.Id;
+            Acceptance acc = await context.Acceptances.FindAsync(id);
             context.Acceptances.Remove(acc);
-            UnifPassport passport = await context.UnifPassports.FindAsync(passId);
-            context.UnifPassports.Remove(passport);
 
             await context.SaveChangesAsync();
 

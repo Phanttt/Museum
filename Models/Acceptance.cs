@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Museum.Models
 {
@@ -28,7 +29,7 @@ namespace Museum.Models
         public ICollection<Material> materials { get; set; }
         
         public ICollection<State> states { get; set; }
-        
+       
         public ICollection<Technique> techniques { get; set; }
 
         public UnifPassport? unifPassport { get; set; }

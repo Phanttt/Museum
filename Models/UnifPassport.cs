@@ -3,6 +3,7 @@ using Museum.Models.Tabs.InsideMuseum;
 using Museum.Models.Tabs.Media;
 using Museum.Models.Tabs.Receiving;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Museum.Models
 {
@@ -12,6 +13,7 @@ namespace Museum.Models
         public int Id { get; set; }
         public DetailInfo? DetailInfo { get; set; }
         public MuseumInfo? MuseumInfo { get; set; }
+        [ForeignKey("MediaId")]
         public Media? Media { get; set; }
         public Receiving? Receiving { get; set; }
     }
