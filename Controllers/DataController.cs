@@ -112,8 +112,6 @@ namespace Museum.Controllers
              .Include(x=>x.states)
              .Include(x=>x.techniques)
              .Include(x => x.unifPassport)
-             .ThenInclude(x => x.Media)
-             .ThenInclude(x => x.Images)
              .FirstOrDefaultAsync();
 
             //var options = new JsonSerializerOptions

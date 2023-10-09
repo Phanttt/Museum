@@ -78,16 +78,21 @@ namespace Museum.Controllers
         }
 
         [HttpGet("GetGeneralInfoById")]
-        public async Task<GeneralInfo> GetGeneralInfoById(int id)
+        public async Task<GeneralInfo> GetGeneralInfoByUnifId(int id)
         {
-            return await context.GeneralInfo.FirstOrDefaultAsync(x => x.id == id);
+            UnifPassport unif = await context.UnifPassports.Include(x => x.Media).ThenInclude(x => x.GeneralInfo).ThenInclude(x=>x.ImageRight).FirstOrDefaultAsync(x => x.Id == id);
+            return unif.Media.GeneralInfo;
         }
 
-        [HttpGet("GetAllImagesByMediaId")]
-        public async Task<IEnumerable<Image>> GetAllImagesByMediaId(int id)
+        [HttpGet("GetAllImagesByUnifId")]
+        public async Task<ActionResult<IEnumerable<Image>>> GetAllImagesByUnifId(int id)
         {
-            Media media = await context.Medias.Include(x => x.Images).FirstOrDefaultAsync(x=>x.id == id);
-            return media.Images;
+            UnifPassport unif = await context.UnifPassports.Include(x => x.Media).ThenInclude(x => x.Images).FirstOrDefaultAsync(x => x.Id == id);
+            if (unif.Media == null)
+            {
+                return null;
+            }
+            return Ok(unif.Media.Images);
         }
     }
 }
