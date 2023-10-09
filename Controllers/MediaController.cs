@@ -49,7 +49,7 @@ namespace Museum.Controllers
             return Ok();
         }
         [HttpPost("AddImages")]
-        public async Task<ActionResult> AddImages(ImageObj imageObj)
+        public async Task<ActionResult<Image>> AddImages(ImageObj imageObj)
         {
             Image image = imageObj.img;
             image.data = imageObj.imageBytes.ToArray();
@@ -74,7 +74,7 @@ namespace Museum.Controllers
             }
 
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(image);
         }
 
         [HttpGet("GetGeneralInfoById")]
