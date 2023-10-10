@@ -26,25 +26,31 @@ namespace Museum.Controllers
         [HttpPost("AddGeneralInfoImg")]
         public async Task<ActionResult> AddGeneralInfoImg(GeneralInfo info)
         {
-            context.Entry(info.ImageRight).State = EntityState.Unchanged;
-
-            await context.GeneralInfo.AddAsync(info);
-
-            UnifPassport unifPassport = await context.UnifPassports.FirstOrDefaultAsync(x => x.Id == info.unifPassportId);
-
-            Media media = unifPassport.Media;
-            if (media == null)
+            if (info.id == 0)
             {
-                Media newmed = new Media();
-                newmed.GeneralInfo = info;
-                await context.Medias.AddAsync(newmed);
-                unifPassport.Media = newmed;
+                context.Entry(info.ImageRight).State = EntityState.Unchanged;
+
+                await context.GeneralInfo.AddAsync(info);
+
+                UnifPassport unifPassport = await context.UnifPassports.FirstOrDefaultAsync(x => x.Id == info.unifPassportId);
+
+                Media media = unifPassport.Media;
+                if (media == null)
+                {
+                    Media newmed = new Media();
+                    newmed.GeneralInfo = info;
+                    await context.Medias.AddAsync(newmed);
+                    unifPassport.Media = newmed;
+                }
+                else
+                {
+                    media.GeneralInfo = info;
+                }
             }
             else
             {
-                media.GeneralInfo = info;
+                context.GeneralInfo.Update(info);
             }
-
             await context.SaveChangesAsync();
             return Ok();
         }
@@ -81,6 +87,10 @@ namespace Museum.Controllers
         public async Task<GeneralInfo> GetGeneralInfoByUnifId(int id)
         {
             UnifPassport unif = await context.UnifPassports.Include(x => x.Media).ThenInclude(x => x.GeneralInfo).ThenInclude(x=>x.ImageRight).FirstOrDefaultAsync(x => x.Id == id);
+            if (unif.Media == null)
+            {
+                return null;
+            }
             return unif.Media.GeneralInfo;
         }
 
@@ -93,6 +103,43 @@ namespace Museum.Controllers
                 return null;
             }
             return Ok(unif.Media.Images);
+        }
+
+        [HttpPut("MakeMainImage")]   
+        public async Task<IActionResult> MakeMainImage([FromBody] int imageId)
+        {
+            Image img = await context.Images.FirstOrDefaultAsync(x => x.id == imageId);
+            List<Image> images = await context.Images.Where(x => x.MediaId == img.MediaId).ToListAsync();
+            foreach (var item in images)
+            {
+                item.isMain = false;
+            }
+            img.isMain = true;
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+
+
+        [HttpDelete("DeleteImage")]
+        public async Task<IActionResult> DeleteImage([FromBody] int imageId)
+        {
+            Image img = await context.Images.FirstOrDefaultAsync(x => x.id == imageId);
+            context.Remove(img);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpGet("GetMainImage")]
+        public async Task<IActionResult> GetMainImage([FromBody] int unifId)
+        {
+            UnifPassport unif = await context.UnifPassports
+                .Include(x => x.Media)
+                .ThenInclude(x => x.Images)
+                .FirstOrDefaultAsync(x=>x.Id == unifId);
+
+            Image img = unif.Media.Images.Where(x => x.isMain).FirstOrDefault();
+           
+            return Ok(img);
         }
     }
 }

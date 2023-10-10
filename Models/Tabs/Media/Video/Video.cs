@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Museum.Models.Tabs.Media
 {
@@ -11,6 +12,8 @@ namespace Museum.Models.Tabs.Media
         public string description { get; set; }
         public string note { get; set; }
 
-        ICollection<Media> Medias { get; set; }
+        public int MediaId { get; set; }
+        [JsonIgnore]
+        public Media Media { get; set; }
     }
 }

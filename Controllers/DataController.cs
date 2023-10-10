@@ -23,37 +23,6 @@ namespace Museum.Controllers
         [HttpPost("AcceptItem")]
         public async Task<ActionResult<int>> AcceptItem([FromBody] Acceptance acceptance)
         {
-            Acceptance existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.id == acceptance.id);
-            if (existedAcc != null)
-            {
-                return BadRequest("Експонат вже існує з таким номером по книзі прийому");
-            }
-            existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.inventoryN == acceptance.inventoryN);
-            if (existedAcc != null)
-            {
-                return BadRequest("Експонат вже існує з таким інвентарним номером");
-            }
-            existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.insideN == acceptance.insideN);
-            if (existedAcc != null)
-            {
-                return BadRequest("Експонат вже існує з таким внутрішнім номером");
-            }
-
-            if (acceptance.inventoryN == 0)
-            {
-                int maxInventoryN = await context.Acceptances.MaxAsync(x => x.inventoryN);
-                acceptance.inventoryN = maxInventoryN + 1;
-            }
-
-            if (acceptance.insideN == 0)
-            {
-                int maxInsideN = await context.Acceptances.MaxAsync(x => x.insideN);
-                acceptance.insideN = maxInsideN + 1;
-            }
-
-            UnifPassport unifPassport = new UnifPassport();
-            acceptance.unifPassport = unifPassport;
-
             foreach (var material in acceptance.materials)
             {
                 context.Entry(material).State = EntityState.Unchanged;
@@ -69,7 +38,55 @@ namespace Museum.Controllers
                 context.Entry(material).State = EntityState.Unchanged;
             }
 
-            await context.Acceptances.AddAsync(acceptance);
+            Acceptance existedAcc = await context.Acceptances
+                     .Include(x => x.materials)
+                     .Include(x => x.states)
+                     .Include(x => x.techniques)
+                     .FirstOrDefaultAsync(x => x.id == acceptance.id);
+
+            if (acceptance.id == 0)
+            {
+                if (existedAcc != null)
+                {
+                    return BadRequest("Експонат вже існує з таким номером по книзі прийому");
+                }
+                existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.inventoryN == acceptance.inventoryN);
+                if (existedAcc != null)
+                {
+                    return BadRequest("Експонат вже існує з таким інвентарним номером");
+                }
+                existedAcc = await context.Acceptances.FirstOrDefaultAsync(x => x.insideN == acceptance.insideN);
+                if (existedAcc != null)
+                {
+                    return BadRequest("Експонат вже існує з таким внутрішнім номером");
+                }
+
+                if (acceptance.inventoryN == 0)
+                {
+                    int maxInventoryN = await context.Acceptances.MaxAsync(x => x.inventoryN);
+                    acceptance.inventoryN = maxInventoryN + 1;
+                }
+
+                if (acceptance.insideN == 0)
+                {
+                    int maxInsideN = await context.Acceptances.MaxAsync(x => x.insideN);
+                    acceptance.insideN = maxInsideN + 1;
+                }
+
+                UnifPassport unifPassport = new UnifPassport();
+                acceptance.unifPassport = unifPassport;
+                context.Acceptances.Add(acceptance);
+            }
+            else
+            {
+                existedAcc.techniques.Clear();
+                existedAcc.materials.Clear();
+                existedAcc.states.Clear();
+                await context.SaveChangesAsync();
+
+                context.Entry(existedAcc).State = EntityState.Detached;
+                context.Acceptances.Update(acceptance);
+            }
 
             await context.SaveChangesAsync();
             return Ok(acceptance.id);
@@ -92,13 +109,18 @@ namespace Museum.Controllers
             return await context.Techniques.ToListAsync();
         }
         [HttpGet("GetAllObjects")]
-        public async Task<IEnumerable<Acceptance>> GetAllObjects()
+        public async Task<IEnumerable<ObjForRespAll>> GetAllObjects()
         {
-            List<Acceptance> acceptances = await context.Acceptances
+            List<ObjForRespAll> acceptances = await context.Acceptances
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)
-             .Where(x => x.unifPassport.Media.Images.Count == 0 || (x.unifPassport.Media.Images.Any(img => img.isMain == true || x.unifPassport.Media.Images.Any(img => img.isMain == false))))
+             .Select(x=> new ObjForRespAll
+             {
+                 id = x.id,
+                 name = x.name,
+                 images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+             })
              .ToListAsync();
 
             return acceptances;
@@ -113,13 +135,6 @@ namespace Museum.Controllers
              .Include(x=>x.techniques)
              .Include(x => x.unifPassport)
              .FirstOrDefaultAsync();
-
-            //var options = new JsonSerializerOptions
-            //{
-            //    ReferenceHandler = ReferenceHandler.Preserve,
-            //};
-
-            //string json = JsonSerializer.Serialize(acceptance, options);
 
             return acceptance;
         }
