@@ -5,9 +5,7 @@ namespace Museum.Models.Tabs.Info
     public class KeyWord
     {
         [Key]
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Meaning { get; set; }
-        public string WIKILink { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
     }
 }

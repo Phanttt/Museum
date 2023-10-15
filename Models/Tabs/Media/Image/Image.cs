@@ -10,7 +10,6 @@ namespace Museum.Models.Tabs.Media
         public int id { get; set; }
         [Required]
         public string title { get; set; }
-        [Required]
         public byte[]? data { get; set; }
         public string? link { get; set; }
         [Required]
@@ -18,8 +17,9 @@ namespace Museum.Models.Tabs.Media
         public bool isMain { get; set; }
         [NotMapped]
         public int unifPassportId { get; set; }
-        public int MediaId { get; set; }
+
+        public int? MediaId { get; set; }
         [JsonIgnore]
-        public Media Media { get; set; }
+        public Media? Media { get; set; }
     }
 }

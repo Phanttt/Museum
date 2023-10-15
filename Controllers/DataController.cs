@@ -111,7 +111,7 @@ namespace Museum.Controllers
         [HttpGet("GetAllObjects")]
         public async Task<IEnumerable<ObjForRespAll>> GetAllObjects()
         {
-            List<ObjForRespAll> acceptances = await context.Acceptances
+                List<ObjForRespAll> acceptances = await context.Acceptances
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)

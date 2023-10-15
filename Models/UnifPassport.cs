@@ -13,7 +13,7 @@ namespace Museum.Models
         public int Id { get; set; }
         public DetailInfo? DetailInfo { get; set; }
         public MuseumInfo? MuseumInfo { get; set; }
-        [ForeignKey("MediaId")]
+   
         public Media? Media { get; set; }
         public Receiving? Receiving { get; set; }
     }
