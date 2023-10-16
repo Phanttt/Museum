@@ -31,24 +31,11 @@ namespace Museum.Data
         {
             base.OnModelCreating(modelBuilder);
         }
-        public DbSet<Dimentions> Dimentions { get; set; }
-        public DbSet<City> Cities { get; set; }
-        public DbSet<Classification> Classifications { get; set; }
         public DbSet<Collection> Collections { get; set; }
-        public DbSet<Complex> Complexes { get; set; }
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<Decoding> Decodings { get; set; }
         public DbSet<DetailInfo> DetailInfos { get; set; }
-        public DbSet<DetLink> DetLinks{ get; set; }
-        public DbSet<Form> Forms { get; set; }
         public DbSet<Fund> Funds{ get; set; }
-        public DbSet<Gender> Genders{ get; set; }
         public DbSet<Group> Groups{ get; set; }
-        public DbSet<Inscript> Inscripts { get; set; }
         public DbSet<KeyWord> KeyWords { get; set; }
-        public DbSet<Marking> Markings { get; set; }
-        public DbSet<Research> Researches { get; set; }
-        public DbSet<Stamp> Stamps{ get; set; }
         public DbSet<Tag> Tags{ get; set; }
 
         public DbSet<Check> Checks { get; set; }

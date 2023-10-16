@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Museum.Models.Tabs.Info
 {
@@ -7,5 +8,8 @@ namespace Museum.Models.Tabs.Info
         [Key]
         public int id { get; set; }
         public string name { get; set; }
+
+        [JsonIgnore]
+        public ICollection<DetailInfo> detailInfos { get; set; }
     }
 }
