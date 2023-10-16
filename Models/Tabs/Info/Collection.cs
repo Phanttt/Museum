@@ -10,6 +10,6 @@ namespace Museum.Models.Tabs.Info
         public string name { get; set; }
 
         [JsonIgnore]
-        public ICollection<DetailInfo> detailInfos { get; set; }
+        public ICollection<DetailInfo>? detailInfos { get; set; }
     }
 }

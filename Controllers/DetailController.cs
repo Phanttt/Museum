@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Museum.Data;
 using Museum.Models;
@@ -15,30 +16,95 @@ namespace Museum.Controllers
         {
             this.context = context;
         }
+
         [HttpGet("GetFunds")]
         public async Task<ActionResult<IEnumerable<Fund>>> GetFunds()
         {
             List<Fund> funds = await context.Funds.ToListAsync();
             return funds;
         }
+
         [HttpGet("GetGroups")]
         public async Task<ActionResult<IEnumerable<Group>>> GetGroups()
         {
             List<Group> groups = await context.Groups.ToListAsync();
             return groups;
         }
+
+        [HttpGet("GetKeyWords")]
+        public async Task<ActionResult<IEnumerable<KeyWord>>> GetKeyWords()
+        {
+            List<KeyWord> keyWords = await context.KeyWords.ToListAsync();
+            return keyWords;
+        }
+
+        [HttpGet("GetTags")]
+        public async Task<ActionResult<IEnumerable<Tag>>> GetTags()
+        {
+            List<Tag> tags = await context.Tags.ToListAsync();
+            return tags;
+        }
+
         [HttpGet("GetCollections")]
         public async Task<ActionResult<IEnumerable<Collection>>> GetCollections()
         {
             List<Collection> collections = await context.Collections.ToListAsync();
             return collections;
         }
-        [HttpPost("AddDetail")]
-        public async Task<ActionResult<int>> AddDetail([FromBody] DetailInfo info)
-        {
 
-            return Ok(0);
+        [HttpPost("AddGroup")]
+        public async Task<ActionResult> AddGroup([FromBody] Group group)
+        {
+            await context.Groups.AddAsync(group);
+            await context.SaveChangesAsync();
+            return Ok();
         }
 
+        [HttpPost("AddCollection")]
+        public async Task<ActionResult> AddCollection([FromBody] Collection collection)
+        {
+            await context.Collections.AddAsync(collection);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost("AddTag")]
+        public async Task<ActionResult> AddTag([FromBody] Tag tag)
+        {
+            await context.Tags.AddAsync(tag);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("AddKeyWord")]
+        public async Task<ActionResult> AddKeyWord([FromBody] KeyWord keyWord)
+        {
+            await context.KeyWords.AddAsync(keyWord);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost("AddDetailInfo")]
+        public async Task<ActionResult> AddDetailInfo([FromBody] DetailInfo detailInfo, int unifId)
+        {
+            UnifPassport passport = await context.UnifPassports.FindAsync(unifId);
+            passport.DetailInfo = detailInfo; 
+
+            await context.DetailInfos.AddAsync(detailInfo);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpGet("GetDetailInfo")]
+        public async Task<ActionResult<DetailInfo>> GetDetailInfoById(int id)
+        {
+            DetailInfo? info = await context.DetailInfos
+                .Include(x => x.groups)
+                .Include(x => x.keyWords)
+                .Include(x => x.tags)
+                .Include(x => x.Fund)
+                .Include(x => x.collections)
+                .FirstOrDefaultAsync(x => x.id == id);
+
+            return info;
+        }
     }
 }
