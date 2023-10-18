@@ -1,4 +1,4 @@
-﻿namespace Museum.Data
+﻿namespace Museum.Data.ObjsForAuth
 {
     public class LogData
     {

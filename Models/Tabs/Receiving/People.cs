@@ -1,16 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Museum.Models.Tabs.Receiving
 {
     public class People
     {
         [Key]
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string ShortInfo { get; set; }
-        public string FullInfo { get; set; }
-        public byte[] Data { get; set; }
-        public string Connection { get; set; }
-        public ICollection<Link> links { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string info { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Receiving>? receivings { get; set; }
     }
 }

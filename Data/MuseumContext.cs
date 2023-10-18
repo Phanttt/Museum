@@ -58,9 +58,8 @@ namespace Museum.Data
         public DbSet<Video> Videos { get; set; }
         public DbSet<Media> Medias { get; set; }
 
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Event> Events { get; set; }
-        public DbSet<Link> Links { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<People> Peoples { get; set; }
         public DbSet<Producer> Producers { get; set; }
@@ -70,7 +69,6 @@ namespace Museum.Data
         public DbSet<Receiving> Receivings { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Structure> Structures { get; set; }
-        public DbSet<TimeLimit> TimeLimits { get; set; }
         public DbSet<EventType> EventTypes { get; set; }
 
         public DbSet<DragMetal> DragMetals { get; set; }

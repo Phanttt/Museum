@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Museum.Data;
+using Museum.Data.ObjsForAuth;
 
 var builder = WebApplication.CreateBuilder(args);
 
