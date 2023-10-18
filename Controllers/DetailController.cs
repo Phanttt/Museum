@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Museum.Data;
+using Museum.Data.ObjsForDetail;
 using Museum.Models;
 using Museum.Models.Tabs.Info;
 
@@ -53,45 +54,63 @@ namespace Museum.Controllers
         }
 
         [HttpPost("AddGroup")]
-        public async Task<ActionResult> AddGroup([FromBody] Group group)
+        public async Task<ActionResult<Group>> AddGroup([FromBody] Group group)
         {
             await context.Groups.AddAsync(group);
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(group);
         }
 
         [HttpPost("AddCollection")]
-        public async Task<ActionResult> AddCollection([FromBody] Collection collection)
+        public async Task<ActionResult<Collection>> AddCollection([FromBody] Collection collection)
         {
             await context.Collections.AddAsync(collection);
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(collection);
         }
 
         [HttpPost("AddTag")]
-        public async Task<ActionResult> AddTag([FromBody] Tag tag)
+        public async Task<ActionResult<Tag>> AddTag([FromBody] Tag tag)
         {
             await context.Tags.AddAsync(tag);
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(tag);
         }
         [HttpPost("AddKeyWord")]
-        public async Task<ActionResult> AddKeyWord([FromBody] KeyWord keyWord)
+        public async Task<ActionResult<KeyWord>> AddKeyWord([FromBody] KeyWord keyWord)
         {
             await context.KeyWords.AddAsync(keyWord);
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(keyWord);
         }
 
         [HttpPost("AddDetailInfo")]
-        public async Task<ActionResult> AddDetailInfo([FromBody] DetailInfo detailInfo, int unifId)
-        {
-            UnifPassport passport = await context.UnifPassports.FindAsync(unifId);
+        public async Task<ActionResult> AddDetailInfo([FromBody] ObjForDetail obj)
+            {
+            UnifPassport passport = await context.UnifPassports.FindAsync(obj.unifId);
+            DetailInfo detailInfo = obj.detail;
+            context.Entry(detailInfo.Fund).State = EntityState.Unchanged;
+            foreach (var group in detailInfo.groups)
+            {
+                context.Entry(group).State = EntityState.Unchanged;
+            }
+            foreach (var group in detailInfo.collections)
+            {
+                context.Entry(group).State = EntityState.Unchanged;
+            }
+            foreach (var group in detailInfo.keyWords)
+            {
+                context.Entry(group).State = EntityState.Unchanged;
+            }
+            foreach (var group in detailInfo.tags)
+            {
+                context.Entry(group).State = EntityState.Unchanged;
+            }
             passport.DetailInfo = detailInfo; 
 
             await context.DetailInfos.AddAsync(detailInfo);
             await context.SaveChangesAsync();
-            return Ok();
+            return Ok(detailInfo);
         }
         [HttpGet("GetDetailInfo")]
         public async Task<ActionResult<DetailInfo>> GetDetailInfoById(int id)

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace Museum.Models.Tabs.Info
@@ -17,7 +18,5 @@ namespace Museum.Models.Tabs.Info
         public ICollection<KeyWord> keyWords { get; set; }
         [Required]
         public ICollection<Tag> tags {get; set; }
-       
-
     }
 }
