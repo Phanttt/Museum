@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Museum.Models.Users;
+using System.ComponentModel.DataAnnotations;
 
 namespace Museum.Models.Tabs.Receiving
 {
@@ -12,8 +13,10 @@ namespace Museum.Models.Tabs.Receiving
         public Owner Owner { get; set; }
         [Required]
         public Provider Provider { get; set; }
+        
+        //public User? Receiver { get; set; }
         [Required]
-        public DateTime date { get; set; }
+        public string date { get; set; }
         [Required]
         public ReceiveWay ReceiveWay { get; set; }
         [Required]
@@ -22,17 +25,19 @@ namespace Museum.Models.Tabs.Receiving
         public byte[]? receiptAgreement { get; set; }
 
 
-        public decimal? price { get; set; }
+        public int price { get; set; }
         public Currency? Currency { get; set; }
         public byte[]? priceAct { get; set; }
-        public DateTime? periodFrom { get; set; }
-        public DateTime? periodTo { get; set; }
+        public string periodFrom { get; set; }
+        public string periodTo { get; set; }
         public ICollection<Structure> structures { get; set; }
-        public ICollection<Event> events { get; set; }
+        public ICollection<Event>? events { get; set; }
         public ICollection<People> peoples { get; set; }
 
         [Required]
         public Producer Producer { get; set; }
         public string? descriptionFP { get; set; }
+
+
     }
 }

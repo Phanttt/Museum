@@ -148,7 +148,18 @@ namespace Museum.Controllers
 
             return Ok();
         }
+        [HttpGet("GetObjectByIdForShow")]
+        public async Task<Acceptance> GetObjectByIdForShow(int id)
+        {
+            Acceptance acceptance = await context.Acceptances
+             .Where(x => x.id == id)
+             .Include(x => x.unifPassport)
+             .Include(x => x.unifPassport.Media.Images)
+             .Include(x => x.unifPassport.Media.GeneralInfo)
+             .FirstOrDefaultAsync();
 
-        
+            return acceptance;
+        }
+
     }
 }

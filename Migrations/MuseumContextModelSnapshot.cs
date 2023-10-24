@@ -342,7 +342,7 @@ namespace Museum.Migrations
                     b.Property<int>("CheckTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ChekerId")
+                    b.Property<int>("Chekerid")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -366,7 +366,7 @@ namespace Museum.Migrations
 
                     b.HasIndex("CheckTypeId");
 
-                    b.HasIndex("ChekerId");
+                    b.HasIndex("Chekerid");
 
                     b.HasIndex("MuseumInfoId");
 
@@ -409,12 +409,12 @@ namespace Museum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("Userid")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("Userid");
 
                     b.ToTable("Deletings");
                 });
@@ -488,7 +488,7 @@ namespace Museum.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DiscovererId")
+                    b.Property<int>("Discovererid")
                         .HasColumnType("int");
 
                     b.Property<int?>("MuseumInfoId")
@@ -503,7 +503,7 @@ namespace Museum.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DiscovererId");
+                    b.HasIndex("Discovererid");
 
                     b.HasIndex("MuseumInfoId");
 
@@ -1039,10 +1039,6 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("info")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1128,7 +1124,7 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("Currencyid")
+                    b.Property<int?>("Currencyid")
                         .HasColumnType("int");
 
                     b.Property<int>("Ownerid")
@@ -1149,32 +1145,31 @@ namespace Museum.Migrations
                     b.Property<int>("Statusid")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("descriptionFP")
+                    b.Property<string>("date")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("periodFrom")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("descriptionFP")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("periodTo")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("periodFrom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("periodTo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("price")
+                        .HasColumnType("int");
 
                     b.Property<byte[]>("priceAct")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("receiptAct")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("receiptAgreement")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("id");
@@ -1379,43 +1374,43 @@ namespace Museum.Migrations
 
             modelBuilder.Entity("Museum.Models.Users.Role", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Museum.Models.Users.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RoleId")
+                    b.Property<int>("Roleid")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<string>("login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("RoleId");
+                    b.Property<string>("password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Roleid");
 
                     b.ToTable("Users");
                 });
@@ -1600,7 +1595,7 @@ namespace Museum.Migrations
 
                     b.HasOne("Museum.Models.Users.User", "Cheker")
                         .WithMany()
-                        .HasForeignKey("ChekerId")
+                        .HasForeignKey("Chekerid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1617,7 +1612,7 @@ namespace Museum.Migrations
                 {
                     b.HasOne("Museum.Models.Users.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("Userid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1628,7 +1623,7 @@ namespace Museum.Migrations
                 {
                     b.HasOne("Museum.Models.Users.User", "Discoverer")
                         .WithMany()
-                        .HasForeignKey("DiscovererId")
+                        .HasForeignKey("Discovererid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1793,9 +1788,7 @@ namespace Museum.Migrations
                 {
                     b.HasOne("Museum.Models.Tabs.Receiving.Currency", "Currency")
                         .WithMany()
-                        .HasForeignKey("Currencyid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Currencyid");
 
                     b.HasOne("Museum.Models.Tabs.Receiving.Owner", "Owner")
                         .WithMany()
@@ -1898,7 +1891,7 @@ namespace Museum.Migrations
                 {
                     b.HasOne("Museum.Models.Users.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("Roleid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

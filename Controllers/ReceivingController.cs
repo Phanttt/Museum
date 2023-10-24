@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Museum.Data;
 using Museum.Data.ObjsForReceiving;
+using Museum.Models;
 using Museum.Models.Tabs.Receiving;
+using Museum.Models.Users;
 
 namespace Museum.Controllers
 {
@@ -16,7 +18,24 @@ namespace Museum.Controllers
         {
             this.context = context;
         }
-
+        [HttpGet("GetStructures")]
+        public async Task<ActionResult<IEnumerable<Structure>>> GetStructures()
+        {
+            List<Structure> data = await context.Structures.ToListAsync();
+            return data;
+        }
+        [HttpGet("GetPeoples")]
+        public async Task<ActionResult<IEnumerable<People>>> GetPeoples()
+        {
+            List<People> data = await context.Peoples.ToListAsync();
+            return data;
+        }
+        [HttpGet("GetEvents")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
+        {
+            List<Event> data = await context.Events.ToListAsync();
+            return data;
+        }
         [HttpGet("GetStatuses")]
         public async Task<ActionResult<IEnumerable<Status>>> GetStatuses()
         {
@@ -39,6 +58,12 @@ namespace Museum.Controllers
         public async Task<ActionResult<IEnumerable<ReceiveWay>>> GetReceiveWays()
         {
             List<ReceiveWay> data = await context.ReceiveWays.ToListAsync();
+            return data;
+        }
+        [HttpGet("GetReceivers")]
+        public async Task<ActionResult<IEnumerable<User>>> GetReceivers()
+        {
+            List<User> data = await context.Users.ToListAsync();
             return data;
         }
         [HttpGet("GetPurposes")]
@@ -66,32 +91,32 @@ namespace Museum.Controllers
             return data;
         }
         [HttpPost("AddStructure")]
-        public async Task<ActionResult<int>> AddStructure(Structure structure)
+        public async Task<ActionResult<Structure>> AddStructure(Structure structure)
         {
             await context.Structures.AddAsync(structure);
             await context.SaveChangesAsync();
-            return structure.id;
+            return structure;
         }
         [HttpPost("AddPeople")]
-        public async Task<ActionResult<int>> AddPeople(People people)
+        public async Task<ActionResult<People>> AddPeople(People people)
         {
             await context.Peoples.AddAsync(people);
             await context.SaveChangesAsync();
-            return people.id;
+            return people;
         }
         [HttpPost("AddOwner")]
-        public async Task<ActionResult<int>> AddOwner(Owner owner)
+        public async Task<ActionResult<Owner>> AddOwner(Owner owner)
         {
             await context.Owners.AddAsync(owner);
             await context.SaveChangesAsync();
-            return owner.id;
+            return owner;
         }
         [HttpPost("AddProvider")]
-        public async Task<ActionResult<int>> AddProvider(Provider provider)
+        public async Task<ActionResult<Provider>> AddProvider(Provider provider)
         {
             await context.Providers.AddAsync(provider);
             await context.SaveChangesAsync();
-            return provider.id;
+            return provider;
         }
         [HttpPost("AddEvent")]
         public async Task<ActionResult<int>> AddEvent(Event ev)
@@ -106,14 +131,58 @@ namespace Museum.Controllers
         public async Task<ActionResult<int>> AddReceiving(ReceiveObj receiveObj)
         {
             Receiving receiving = receiveObj.receiving;
+            UnifPassport unifPassport = await context.UnifPassports.FindAsync(receiving.id);
+            receiving.id = 0;
+
+
             receiving.receiptAct = receiveObj.receiptAct.ToArray();
             receiving.receiptAgreement = receiveObj.receiptAgreement.ToArray();
             receiving.priceAct = receiveObj.priceAct.ToArray();
 
+            context.Entry(receiving.Currency).State = EntityState.Unchanged;
+            context.Entry(receiving.Status).State = EntityState.Unchanged;
+            context.Entry(receiving.Owner).State = EntityState.Unchanged;
+            context.Entry(receiving.Provider).State = EntityState.Unchanged;
+            context.Entry(receiving.ReceiveWay).State = EntityState.Unchanged;
+            context.Entry(receiving.Currency).State = EntityState.Unchanged;
+            context.Entry(receiving.Producer).State = EntityState.Unchanged;
+            context.Entry(receiving.Purpose).State = EntityState.Unchanged;
+
+            foreach (var item in receiving.structures)
+            {
+                context.Entry(item).State = EntityState.Unchanged;
+            }
+
+            foreach (var item in receiving.peoples)
+            {
+                context.Entry(item).State = EntityState.Unchanged;
+            }
+
+            unifPassport.Receiving = receiving;
+
             await context.Receivings.AddAsync(receiving);
             await context.SaveChangesAsync();
 
-            return receiving.id;
+            return Ok();
+        }
+
+        [HttpGet("GetReceiving")]
+        public async Task<ActionResult<Receiving>> GetReceiving(int id)
+        {
+            UnifPassport unif = await context.UnifPassports
+                .Include(x => x.Receiving)
+                .Include(x => x.Receiving.structures)
+                .Include(x => x.Receiving.peoples)
+                .Include(x => x.Receiving.Status)
+                .Include(x => x.Receiving.Owner)
+                .Include(x => x.Receiving.Provider)
+                .Include(x => x.Receiving.ReceiveWay)
+                .Include(x => x.Receiving.Purpose)
+                .Include(x => x.Receiving.Currency)
+                .Include(x => x.Receiving.Producer)
+                .FirstAsync(x=>x.Id == id);
+
+            return unif.Receiving;
         }
     }
 }

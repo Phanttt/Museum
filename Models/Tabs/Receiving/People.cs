@@ -8,7 +8,6 @@ namespace Museum.Models.Tabs.Receiving
         [Key]
         public int id { get; set; }
         public string name { get; set; }
-        public string info { get; set; }
 
         [JsonIgnore]
         public ICollection<Receiving>? receivings { get; set; }
