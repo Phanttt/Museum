@@ -6,8 +6,8 @@ namespace Museum.Models.Users
     {
         [Key]
         public int id { get; set; }
-        public string login { get; set; }
-        public string password { get; set; }
-        public Role Role { get; set; }
+        public string name { get; set; }
+        public string? password { get; set; }
+        public Role? Role { get; set; }
     }
 }

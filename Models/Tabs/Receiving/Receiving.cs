@@ -13,8 +13,7 @@ namespace Museum.Models.Tabs.Receiving
         public Owner Owner { get; set; }
         [Required]
         public Provider Provider { get; set; }
-        
-        //public User? Receiver { get; set; }
+        public User Recipient { get; set; }
         [Required]
         public string date { get; set; }
         [Required]

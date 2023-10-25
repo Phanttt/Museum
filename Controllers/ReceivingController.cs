@@ -147,6 +147,7 @@ namespace Museum.Controllers
             context.Entry(receiving.Currency).State = EntityState.Unchanged;
             context.Entry(receiving.Producer).State = EntityState.Unchanged;
             context.Entry(receiving.Purpose).State = EntityState.Unchanged;
+            context.Entry(receiving.Recipient).State = EntityState.Unchanged;
 
             foreach (var item in receiving.structures)
             {
@@ -180,6 +181,7 @@ namespace Museum.Controllers
                 .Include(x => x.Receiving.Purpose)
                 .Include(x => x.Receiving.Currency)
                 .Include(x => x.Receiving.Producer)
+                .Include(x => x.Receiving.Recipient)
                 .FirstAsync(x=>x.Id == id);
 
             return unif.Receiving;

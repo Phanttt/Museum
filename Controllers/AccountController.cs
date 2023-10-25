@@ -24,7 +24,7 @@ namespace Museum.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<string>> Login([FromBody] LogData data)
         {
-            User user = await context.Users.Where(e=>e.login.Equals(data.Login) && e.password.Equals(data.Password)).FirstOrDefaultAsync();
+            User user = await context.Users.Where(e=>e.name.Equals(data.Login) && e.password.Equals(data.Password)).FirstOrDefaultAsync();
             
             if (user != null)
             {
@@ -44,7 +44,7 @@ namespace Museum.Controllers
             
             User user = new User()
             {               
-                login = data.login,
+                name = data.name,
                 password = data.password,   
 
             };
@@ -75,8 +75,8 @@ namespace Museum.Controllers
             var claims = new List<Claim>
                 {
                     new Claim("Id", Convert.ToString(user.id)),
-                    new Claim("Name", Convert.ToString(user.login)),
-                    new Claim("Login", Convert.ToString(user.login))
+                    new Claim("Name", Convert.ToString(user.name)),
+                    new Claim("Login", Convert.ToString(user.name))
                 };
             ClaimsIdentity claimsIdentity =
             new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

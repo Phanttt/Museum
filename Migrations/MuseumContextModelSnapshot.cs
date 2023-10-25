@@ -1142,6 +1142,9 @@ namespace Museum.Migrations
                     b.Property<int>("ReceiveWayid")
                         .HasColumnType("int");
 
+                    b.Property<int>("Recipientid")
+                        .HasColumnType("int");
+
                     b.Property<int>("Statusid")
                         .HasColumnType("int");
 
@@ -1185,6 +1188,8 @@ namespace Museum.Migrations
                     b.HasIndex("Purposeid");
 
                     b.HasIndex("ReceiveWayid");
+
+                    b.HasIndex("Recipientid");
 
                     b.HasIndex("Statusid");
 
@@ -1400,7 +1405,7 @@ namespace Museum.Migrations
                     b.Property<int>("Roleid")
                         .HasColumnType("int");
 
-                    b.Property<string>("login")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1820,6 +1825,12 @@ namespace Museum.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Museum.Models.Users.User", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("Recipientid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Museum.Models.Tabs.Receiving.Status", "Status")
                         .WithMany()
                         .HasForeignKey("Statusid")
@@ -1837,6 +1848,8 @@ namespace Museum.Migrations
                     b.Navigation("Purpose");
 
                     b.Navigation("ReceiveWay");
+
+                    b.Navigation("Recipient");
 
                     b.Navigation("Status");
                 });
