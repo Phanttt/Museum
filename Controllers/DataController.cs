@@ -160,6 +160,23 @@ namespace Museum.Controllers
 
             return acceptance;
         }
+        [HttpGet("SearchCollectionByName")]
+        public async Task<Collection> SearchCollectionByName(string name)
+        {
+            Collection collection = await context.Collections
+                .Where(x=>x.name == name)
+                .FirstOrDefaultAsync();
 
+            return collection;
+        }
+        [HttpGet("SearchFundByName")]
+        public async Task<Fund> SearchFundByName(string name)
+        {
+            Fund fund = await context.Funds
+                .Where(x => x.name == name)
+                .FirstOrDefaultAsync();
+
+            return fund;
+        }
     }
 }
