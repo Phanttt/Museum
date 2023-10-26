@@ -1,5 +1,6 @@
 ﻿using Museum.Models.Users;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Museum.Models.Tabs.Receiving
 {
@@ -36,7 +37,5 @@ namespace Museum.Models.Tabs.Receiving
         [Required]
         public Producer Producer { get; set; }
         public string? descriptionFP { get; set; }
-
-
     }
 }

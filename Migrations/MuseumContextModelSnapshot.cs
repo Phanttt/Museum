@@ -1402,7 +1402,7 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("Roleid")
+                    b.Property<int?>("Roleid")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -1410,7 +1410,6 @@ namespace Museum.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
@@ -1904,9 +1903,7 @@ namespace Museum.Migrations
                 {
                     b.HasOne("Museum.Models.Users.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("Roleid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Roleid");
 
                     b.Navigation("Role");
                 });

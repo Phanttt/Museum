@@ -9,5 +9,6 @@ namespace Museum.Data.ObjsForReceiving
         public List<byte> receiptAct { get; set; }
         public List<byte> receiptAgreement { get; set; }
         public List<byte> priceAct { get; set; }
+        public int unifId { get; set; }
     }
 }

@@ -131,24 +131,6 @@ namespace Museum.Controllers
         public async Task<ActionResult<int>> AddReceiving(ReceiveObj receiveObj)
         {
             Receiving receiving = receiveObj.receiving;
-            UnifPassport unifPassport = await context.UnifPassports.FindAsync(receiving.id);
-            receiving.id = 0;
-
-
-            receiving.receiptAct = receiveObj.receiptAct.ToArray();
-            receiving.receiptAgreement = receiveObj.receiptAgreement.ToArray();
-            receiving.priceAct = receiveObj.priceAct.ToArray();
-
-            context.Entry(receiving.Currency).State = EntityState.Unchanged;
-            context.Entry(receiving.Status).State = EntityState.Unchanged;
-            context.Entry(receiving.Owner).State = EntityState.Unchanged;
-            context.Entry(receiving.Provider).State = EntityState.Unchanged;
-            context.Entry(receiving.ReceiveWay).State = EntityState.Unchanged;
-            context.Entry(receiving.Currency).State = EntityState.Unchanged;
-            context.Entry(receiving.Producer).State = EntityState.Unchanged;
-            context.Entry(receiving.Purpose).State = EntityState.Unchanged;
-            context.Entry(receiving.Recipient).State = EntityState.Unchanged;
-
             foreach (var item in receiving.structures)
             {
                 context.Entry(item).State = EntityState.Unchanged;
@@ -159,14 +141,60 @@ namespace Museum.Controllers
                 context.Entry(item).State = EntityState.Unchanged;
             }
 
-            unifPassport.Receiving = receiving;
 
-            await context.Receivings.AddAsync(receiving);
+            if (receiveObj.receiptAct.Count != 0)
+            {
+                receiving.receiptAct = receiveObj.receiptAct.ToArray();
+            }
+            if (receiveObj.receiptAgreement.Count != 0)
+            {
+                receiving.receiptAgreement = receiveObj.receiptAgreement.ToArray();
+            }
+            if (receiveObj.receiptAgreement.Count != 0)
+            {
+                receiving.priceAct = receiveObj.priceAct.ToArray();
+            }
+
+            if (receiving.id == 0)
+            { 
+                UnifPassport unifPassport = await context.UnifPassports.FindAsync(receiveObj.unifId);
+                receiving.id = 0;
+
+                context.Entry(receiving.Currency).State = EntityState.Unchanged;
+                context.Entry(receiving.Status).State = EntityState.Unchanged;
+                context.Entry(receiving.Owner).State = EntityState.Unchanged;
+                context.Entry(receiving.Provider).State = EntityState.Unchanged;
+                context.Entry(receiving.ReceiveWay).State = EntityState.Unchanged;
+                context.Entry(receiving.Currency).State = EntityState.Unchanged;
+                context.Entry(receiving.Producer).State = EntityState.Unchanged;
+                context.Entry(receiving.Purpose).State = EntityState.Unchanged;
+                context.Entry(receiving.Recipient).State = EntityState.Unchanged;
+
+                unifPassport.Receiving = receiving;
+
+                await context.Receivings.AddAsync(receiving);
+
+            }
+            else
+            {
+                Receiving existedRec = await context.Receivings
+                    .Include(x=>x.structures)
+                    .Include(x=>x.peoples)
+                    .FirstOrDefaultAsync(x => x.id == receiving.id);
+
+                existedRec.structures.Clear();
+                existedRec.peoples.Clear();
+                //receiving.events.Clear();
+
+                await context.SaveChangesAsync();
+
+                context.Entry(existedRec).State = EntityState.Detached;
+                context.Receivings.Update(receiving);
+            }
             await context.SaveChangesAsync();
 
             return Ok();
         }
-
         [HttpGet("GetReceiving")]
         public async Task<ActionResult<Receiving>> GetReceiving(int id)
         {
