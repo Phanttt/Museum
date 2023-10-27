@@ -6,8 +6,8 @@ namespace Museum.Models.Tabs.InsideMuseum
     {
         [Key]
         public int id { get; set; }
-        public string title { get; set; }
-        public string descriprion { get; set; }
-        public byte[] image { get; set; }
+        public string name { get; set; }
+        public string? descriprion { get; set; }
+        public byte[]? image { get; set; }
     }
 }

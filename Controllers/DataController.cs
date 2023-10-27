@@ -7,6 +7,7 @@ using Museum.Models.Tabs.Info;
 using Museum.Models.Tabs.Media;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Museum.Models.Tabs.InsideMuseum;
 
 namespace Museum.Controllers
 {
@@ -74,6 +75,9 @@ namespace Museum.Controllers
                 }
 
                 UnifPassport unifPassport = new UnifPassport();
+                InsideInfo info = new InsideInfo();
+                unifPassport = new UnifPassport();
+                unifPassport.InsideInfo = info;
                 acceptance.unifPassport = unifPassport;
                 context.Acceptances.Add(acceptance);
             }
@@ -111,7 +115,7 @@ namespace Museum.Controllers
         [HttpGet("GetAllObjects")]
         public async Task<IEnumerable<ObjForRespAll>> GetAllObjects()
         {
-                List<ObjForRespAll> acceptances = await context.Acceptances
+             List<ObjForRespAll> acceptances = await context.Acceptances
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)

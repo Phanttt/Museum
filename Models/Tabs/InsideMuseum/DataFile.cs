@@ -6,8 +6,8 @@ namespace Museum.Models.Tabs.InsideMuseum
     {
         [Key]
         public int id { get; set; }
-        public byte[] actToGiftingDeed { get; set; }
-        public byte[] giftingDeed { get; set; }
-        public byte[] intoFondAct { get; set; }
+        public byte[]? actToGiftingDeed { get; set; }
+        public byte[]? giftingDeed { get; set; }
+        public byte[]? intoFondAct { get; set; }
     }
 }

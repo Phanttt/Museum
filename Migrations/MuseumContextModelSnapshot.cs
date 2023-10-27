@@ -127,7 +127,7 @@ namespace Museum.Migrations
                     b.ToTable("DetailInfoTag");
                 });
 
-            modelBuilder.Entity("EditMuseumInfo", b =>
+            modelBuilder.Entity("EditInsideInfo", b =>
                 {
                     b.Property<int>("editsid")
                         .HasColumnType("int");
@@ -139,7 +139,7 @@ namespace Museum.Migrations
 
                     b.HasIndex("editsid1");
 
-                    b.ToTable("EditMuseumInfo");
+                    b.ToTable("EditInsideInfo");
                 });
 
             modelBuilder.Entity("EventReceiving", b =>
@@ -355,15 +355,12 @@ namespace Museum.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<byte[]>("actToGiftingDeed")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("giftingDeed")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("intoFondAct")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("id");
@@ -400,14 +397,12 @@ namespace Museum.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("descriprion")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("image")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("title")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -416,7 +411,7 @@ namespace Museum.Migrations
                     b.ToTable("Exhibitions");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.MuseumInfo", b =>
+            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.InsideInfo", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -424,22 +419,19 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("Exhibitionid")
+                    b.Property<int?>("Filesid")
                         .HasColumnType("int");
 
-                    b.Property<int>("Filesid")
+                    b.Property<int?>("exhibitionid")
                         .HasColumnType("int");
-
-                    b.Property<bool>("isOnExhibition")
-                        .HasColumnType("bit");
 
                     b.HasKey("id");
 
-                    b.HasIndex("Exhibitionid");
-
                     b.HasIndex("Filesid");
 
-                    b.ToTable("MuseumInfos");
+                    b.HasIndex("exhibitionid");
+
+                    b.ToTable("InsideInfos");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Audio", b =>
@@ -951,10 +943,10 @@ namespace Museum.Migrations
                     b.Property<int?>("DetailInfoid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Mediaid")
+                    b.Property<int?>("InsideInfoid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MuseumInfoid")
+                    b.Property<int?>("Mediaid")
                         .HasColumnType("int");
 
                     b.Property<int?>("Receivingid")
@@ -964,9 +956,9 @@ namespace Museum.Migrations
 
                     b.HasIndex("DetailInfoid");
 
-                    b.HasIndex("Mediaid");
+                    b.HasIndex("InsideInfoid");
 
-                    b.HasIndex("MuseumInfoid");
+                    b.HasIndex("Mediaid");
 
                     b.HasIndex("Receivingid");
 
@@ -1150,7 +1142,7 @@ namespace Museum.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EditMuseumInfo", b =>
+            modelBuilder.Entity("EditInsideInfo", b =>
                 {
                     b.HasOne("Museum.Models.Tabs.InsideMuseum.Edit", null)
                         .WithMany()
@@ -1158,7 +1150,7 @@ namespace Museum.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.MuseumInfo", null)
+                    b.HasOne("Museum.Models.Tabs.InsideMuseum.InsideInfo", null)
                         .WithMany()
                         .HasForeignKey("editsid1")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1200,23 +1192,19 @@ namespace Museum.Migrations
                     b.Navigation("Fund");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.MuseumInfo", b =>
+            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.InsideInfo", b =>
                 {
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Exhibition", "Exhibition")
-                        .WithMany()
-                        .HasForeignKey("Exhibitionid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Museum.Models.Tabs.InsideMuseum.DataFile", "Files")
                         .WithMany()
-                        .HasForeignKey("Filesid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Filesid");
 
-                    b.Navigation("Exhibition");
+                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Exhibition", "exhibition")
+                        .WithMany()
+                        .HasForeignKey("exhibitionid");
 
                     b.Navigation("Files");
+
+                    b.Navigation("exhibition");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Audio", b =>
@@ -1363,13 +1351,13 @@ namespace Museum.Migrations
                         .WithMany()
                         .HasForeignKey("DetailInfoid");
 
+                    b.HasOne("Museum.Models.Tabs.InsideMuseum.InsideInfo", "InsideInfo")
+                        .WithMany()
+                        .HasForeignKey("InsideInfoid");
+
                     b.HasOne("Museum.Models.Tabs.Media.Media", "Media")
                         .WithMany()
                         .HasForeignKey("Mediaid");
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.MuseumInfo", "MuseumInfo")
-                        .WithMany()
-                        .HasForeignKey("MuseumInfoid");
 
                     b.HasOne("Museum.Models.Tabs.Receiving.Receiving", "Receiving")
                         .WithMany()
@@ -1377,9 +1365,9 @@ namespace Museum.Migrations
 
                     b.Navigation("DetailInfo");
 
-                    b.Navigation("Media");
+                    b.Navigation("InsideInfo");
 
-                    b.Navigation("MuseumInfo");
+                    b.Navigation("Media");
 
                     b.Navigation("Receiving");
                 });

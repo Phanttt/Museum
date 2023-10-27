@@ -10,6 +10,6 @@ namespace Museum.Models.Tabs.InsideMuseum
         public int itemId { get; set; }
         public string description { get; set; }
         [JsonIgnore]
-        public ICollection<MuseumInfo> edits { get; set; }
+        public ICollection<InsideInfo>? edits { get; set; }
     }
 }

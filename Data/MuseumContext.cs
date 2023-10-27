@@ -39,7 +39,7 @@ namespace Museum.Data
 
         public DbSet<Edit> Edits{ get; set; }
         public DbSet<Exhibition> Exhibitions{ get; set; }
-        public DbSet<MuseumInfo> MuseumInfos { get; set; }
+        public DbSet<InsideInfo> InsideInfos { get; set; }
         public DbSet<DataFile> DataFiles { get; set; }
 
         public DbSet<Audio> Audios { get; set; }

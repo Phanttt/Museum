@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Museum.Data;
 using Museum.Models;
+using Museum.Models.Tabs.InsideMuseum;
 using Museum.Models.Users;
+using System.IO;
 using Xceed.Words.NET;
 
 namespace Museum.Controllers
@@ -30,16 +32,18 @@ namespace Museum.Controllers
         }
 
         [HttpGet("GiftingDeed")]
-        public async Task<ActionResult> GiftingDeed(int id)
+        public async Task<ActionResult<string>> GiftingDeed(int id)
         {
             Acceptance? acceptance = await context.Acceptances
                 .Include(x => x.unifPassport)
                 .ThenInclude(x => x.Receiving)
                 .Include(x => x.unifPassport.Receiving.Provider)
                 .Include(x => x.unifPassport.Receiving.Recipient)
+                .Include(x => x.unifPassport.InsideInfo)
+                .ThenInclude(x=>x.Files)
                 .FirstOrDefaultAsync(x => x.id == id);
 
-            if (acceptance != null)
+            if (acceptance != null && acceptance.unifPassport.Receiving != null)
             {
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -53,9 +57,19 @@ namespace Museum.Controllers
                         doc.SaveAs(stream); //$"Договір дарування_{acceptance.inventoryN}.docx"
                     }
                     byte[] byteArray = stream.ToArray();
-
+                    InsideInfo insideInfo = acceptance.unifPassport.InsideInfo;
+                    if (insideInfo.Files == null)
+                    {
+                        insideInfo.Files = new DataFile();
+                    }
+                    insideInfo.Files.giftingDeed = byteArray;
+                    context.Update(insideInfo);
+                    await context.SaveChangesAsync();
                 }
-
+            }
+            else
+            {
+                return BadRequest("Не всі необхідні данні введені!");
             }
             return Ok();
         }
@@ -79,54 +93,73 @@ namespace Museum.Controllers
                 .Include(x => x.unifPassport.Receiving.Purpose)
                 .Include(x => x.unifPassport.Receiving.Recipient)
                 .ThenInclude(x=> x.Role)
+                .Include(x => x.unifPassport.InsideInfo)
+                .ThenInclude(x => x.Files)
                 .FirstOrDefaultAsync(x => x.id == id);
 
-            if (acceptance != null)
+            if (acceptance != null && acceptance.unifPassport.Receiving != null)
             {
-                using (DocX doc = DocX.Load(intoFondActPath))
+                using (MemoryStream stream = new MemoryStream())
                 {
-                    doc.ReplaceText("<id>", acceptance.inventoryN.ToString());
-                    doc.ReplaceText("<recipientName>", acceptance.unifPassport.Receiving.Recipient.name);
-                    doc.ReplaceText("<recipientRole>", acceptance.unifPassport.Receiving.Recipient.Role.name);
-                    doc.ReplaceText("<providerName>", acceptance.unifPassport.Receiving.Provider.name);
-                    doc.ReplaceText("<date>", acceptance.unifPassport.Receiving.date);
-
-                    doc.ReplaceText("<userRole>", user.Role.name);
-                    doc.ReplaceText("<userName>", user.name);
-
-
-                    string content = "";
-                    foreach (var item in acceptance.materials)
+                    using (DocX doc = DocX.Load(intoFondActPath))
                     {
-                        content += item.Name + " ";
-                    }
-                    doc.ReplaceText("<materials>", content);
+                        doc.ReplaceText("<id>", acceptance.inventoryN.ToString());
+                        doc.ReplaceText("<recipientName>", acceptance.unifPassport.Receiving.Recipient.name);
+                        doc.ReplaceText("<recipientRole>", acceptance.unifPassport.Receiving.Recipient.Role.name);
+                        doc.ReplaceText("<providerName>", acceptance.unifPassport.Receiving.Provider.name);
+                        doc.ReplaceText("<date>", acceptance.unifPassport.Receiving.date);
 
-                    content = "";
-                    foreach (var item in acceptance.states)
+                        doc.ReplaceText("<userRole>", user.Role.name);
+                        doc.ReplaceText("<userName>", user.name);
+
+
+                        string content = "";
+                        foreach (var item in acceptance.materials)
+                        {
+                            content += item.Name + " ";
+                        }
+                        doc.ReplaceText("<materials>", content);
+
+                        content = "";
+                        foreach (var item in acceptance.states)
+                        {
+                            content += item.Name + " ";
+                        }
+                        doc.ReplaceText("<states>", content);
+
+
+                        content = "";
+                        foreach (var item in acceptance.techniques)
+                        {
+                            content += item.Name + " ";
+                        }
+                        doc.ReplaceText("<techniques>", content);
+
+                        doc.ReplaceText("<name>", acceptance.name);
+                        doc.ReplaceText("<size>", acceptance.size);
+                        doc.ReplaceText("<price>", acceptance.unifPassport.Receiving.price.ToString());
+                        doc.ReplaceText("<inventoryN>", acceptance.inventoryN.ToString());
+                        doc.ReplaceText("<purpose>", acceptance.unifPassport.Receiving.Purpose.name);
+
+                        doc.SaveAs(stream);
+                    }
+
+                    byte[] byteArray = stream.ToArray();
+                    InsideInfo insideInfo = acceptance.unifPassport.InsideInfo;
+                    if (insideInfo.Files == null)
                     {
-                        content += item.Name + " ";
+                        insideInfo.Files = new DataFile();
                     }
-                    doc.ReplaceText("<states>", content);
+                    insideInfo.Files.actToGiftingDeed = byteArray;
+                    context.Update(insideInfo);
+                    await context.SaveChangesAsync();
 
-
-                    content = "";
-                    foreach (var item in acceptance.techniques)
-                    {
-                        content += item.Name + " ";
-                    }
-                    doc.ReplaceText("<techniques>", content);
-
-                    doc.ReplaceText("<name>", acceptance.name);
-                    doc.ReplaceText("<size>", acceptance.size);
-                    doc.ReplaceText("<price>", acceptance.unifPassport.Receiving.price.ToString());
-                    doc.ReplaceText("<inventoryN>", acceptance.inventoryN.ToString());
-                    doc.ReplaceText("<purpose>", acceptance.unifPassport.Receiving.Purpose.name);
-
-
-                    doc.SaveAs($"Акт приймання-передачі_{acceptance.inventoryN}.docx");
                 }
 
+            }
+            else
+            {
+                return BadRequest("Не всі необхідні данні введені!");
             }
             return Ok();
         }
@@ -149,54 +182,71 @@ namespace Museum.Controllers
                 .Include(x => x.unifPassport.Receiving.Purpose)
                 .Include(x => x.unifPassport.Receiving.Recipient)
                 .ThenInclude(x => x.Role)
+                .Include(x => x.unifPassport.InsideInfo)
+                .ThenInclude(x => x.Files)
                 .FirstOrDefaultAsync(x => x.id == id);
 
-            if (acceptance != null)
+            if (acceptance != null && acceptance.unifPassport.Receiving != null)
             {
-                using (DocX doc = DocX.Load(intoFondActPath))
+                using (MemoryStream stream = new MemoryStream())
                 {
-                    doc.ReplaceText("<userRole>", user.Role.name);
-                    doc.ReplaceText("<userName>", user.name);
-                    doc.ReplaceText("<date>", acceptance.unifPassport.Receiving.date);
-                    doc.ReplaceText("<inventoryN>", acceptance.inventoryN.ToString());
-                    doc.ReplaceText("<type>", acceptance.type.ToString());
-                    doc.ReplaceText("<recipientName>", acceptance.unifPassport.Receiving.Recipient.name);
-                    doc.ReplaceText("<recipientRole>", acceptance.unifPassport.Receiving.Recipient.Role.name);
-                    doc.ReplaceText("<periodTo>", acceptance.unifPassport.Receiving.periodTo);
-                    doc.ReplaceText("<providerName>", acceptance.unifPassport.Receiving.Provider.name);
-
-
-
-                    string content = "";
-                    foreach (var item in acceptance.materials)
+                    using (DocX doc = DocX.Load(intoFondActPath))
                     {
-                        content += item.Name + " ";
-                    }
-                    doc.ReplaceText("<materials>", content);
+                        doc.ReplaceText("<userRole>", user.Role.name);
+                        doc.ReplaceText("<userName>", user.name);
+                        doc.ReplaceText("<date>", acceptance.unifPassport.Receiving.date);
+                        doc.ReplaceText("<inventoryN>", acceptance.inventoryN.ToString());
+                        doc.ReplaceText("<type>", acceptance.type.ToString());
+                        doc.ReplaceText("<recipientName>", acceptance.unifPassport.Receiving.Recipient.name);
+                        doc.ReplaceText("<recipientRole>", acceptance.unifPassport.Receiving.Recipient.Role.name);
+                        doc.ReplaceText("<periodTo>", acceptance.unifPassport.Receiving.periodTo);
+                        doc.ReplaceText("<providerName>", acceptance.unifPassport.Receiving.Provider.name);
 
-                    content = "";
-                    foreach (var item in acceptance.states)
+                        string content = "";
+                        foreach (var item in acceptance.materials)
+                        {
+                            content += item.Name + " ";
+                        }
+                        doc.ReplaceText("<materials>", content);
+
+                        content = "";
+                        foreach (var item in acceptance.states)
+                        {
+                            content += item.Name + " ";
+                        }
+                        doc.ReplaceText("<states>", content);
+
+
+                        content = "";
+                        foreach (var item in acceptance.techniques)
+                        {
+                            content += item.Name + " ";
+                        }
+                        doc.ReplaceText("<techniques>", content);
+
+                        doc.ReplaceText("<name>", acceptance.name);
+                        doc.ReplaceText("<size>", acceptance.size);
+                        doc.ReplaceText("<price>", acceptance.unifPassport.Receiving.price.ToString());
+
+                        doc.SaveAs(stream);
+                    }
+
+                    byte[] byteArray = stream.ToArray();
+                    InsideInfo insideInfo = acceptance.unifPassport.InsideInfo;
+                    if (insideInfo.Files == null)
                     {
-                        content += item.Name + " ";
+                        insideInfo.Files = new DataFile();
                     }
-                    doc.ReplaceText("<states>", content);
-
-
-                    content = "";
-                    foreach (var item in acceptance.techniques)
-                    {
-                        content += item.Name + " ";
-                    }
-                    doc.ReplaceText("<techniques>", content);
-
-                    doc.ReplaceText("<name>", acceptance.name);
-                    doc.ReplaceText("<size>", acceptance.size);
-                    doc.ReplaceText("<price>", acceptance.unifPassport.Receiving.price.ToString());
-
-
-                    doc.SaveAs($"Акт приймання-передавання музейних предметів основного фонду_{acceptance.inventoryN}.docx");
+                    insideInfo.Files.intoFondAct = byteArray;
+                    context.Update(insideInfo);
+                    await context.SaveChangesAsync();
                 }
 
+
+            }
+            else
+            {
+                return BadRequest("Не всі необхідні данні введені!");
             }
             return Ok();
         }

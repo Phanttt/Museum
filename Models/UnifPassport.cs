@@ -12,7 +12,7 @@ namespace Museum.Models
         [Key]
         public int Id { get; set; }
         public DetailInfo? DetailInfo { get; set; }
-        public MuseumInfo? MuseumInfo { get; set; }
+        public InsideInfo? InsideInfo { get; set; }
    
         public Media? Media { get; set; }
         public Receiving? Receiving { get; set; }
