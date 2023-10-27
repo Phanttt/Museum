@@ -4,7 +4,6 @@ using Museum.Models.Tabs.Info;
 using Museum.Models.Tabs.InsideMuseum;
 using Museum.Models.Tabs.Media;
 using Museum.Models.Tabs.Receiving;
-using Museum.Models.Tabs.SpecFund;
 using Museum.Models.Users;
 
 namespace Museum.Data
@@ -38,18 +37,10 @@ namespace Museum.Data
         public DbSet<KeyWord> KeyWords { get; set; }
         public DbSet<Tag> Tags{ get; set; }
 
-        public DbSet<Check> Checks { get; set; }
-        public DbSet<CheckType> CheckTypes { get; set; }
-        public DbSet<Deleting> Deletings{ get; set; }
         public DbSet<Edit> Edits{ get; set; }
         public DbSet<Exhibition> Exhibitions{ get; set; }
-        public DbSet<ItemDamage> ItemDamages { get; set; }
-        public DbSet<Location> Locations { get; set; }
         public DbSet<MuseumInfo> MuseumInfos { get; set; }
-        public DbSet<Notes> Notes { get; set; }
-        public DbSet<Recommendation> Recommendations { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<StorageCondition> StorageConditions { get; set; }
+        public DbSet<DataFile> DataFiles { get; set; }
 
         public DbSet<Audio> Audios { get; set; }
         public DbSet<Document> Documents { get; set; }
@@ -70,10 +61,6 @@ namespace Museum.Data
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Structure> Structures { get; set; }
         public DbSet<EventType> EventTypes { get; set; }
-
-        public DbSet<DragMetal> DragMetals { get; set; }
-        public DbSet<SpecFund> SpecFunds { get; set; }
-        public DbSet<Weapon> Weapons { get; set; }
 
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }

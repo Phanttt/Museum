@@ -5,14 +5,10 @@ namespace Museum.Models.Tabs.InsideMuseum
     public class MuseumInfo
     {
         [Key]
-        public int Id { get; set; }
-        public ICollection<Check> Checks { get; set; }
-        public ICollection<Reservation> Reservations { get; set; }
-        public StorageCondition StorageCondition { get; set; }
-        public ICollection<ItemDamage> ItemDamage { get; set; }
-        public Deleting Deleting { get; set; }
-        public Location Location { get; set; }
-
-        public Edit Edit { get; set; } 
+        public int id { get; set; }
+        public bool isOnExhibition { get; set; }
+        public Exhibition Exhibition { get; set; }
+        public ICollection<Edit> edits { get; set; }
+        public DataFile Files { get; set; }
     }
 }

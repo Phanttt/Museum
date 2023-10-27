@@ -1,12 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Museum.Models.Tabs.InsideMuseum
 {
     public class Edit
     {
         [Key]
-        public int Id { get; set; }
-        public int ItemId { get; set; }
-        public string Description { get; set; }
+        public int id { get; set; }
+        public int itemId { get; set; }
+        public string description { get; set; }
+        [JsonIgnore]
+        public ICollection<MuseumInfo> edits { get; set; }
     }
 }

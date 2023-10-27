@@ -127,6 +127,21 @@ namespace Museum.Migrations
                     b.ToTable("DetailInfoTag");
                 });
 
+            modelBuilder.Entity("EditMuseumInfo", b =>
+                {
+                    b.Property<int>("editsid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("editsid1")
+                        .HasColumnType("int");
+
+                    b.HasKey("editsid", "editsid1");
+
+                    b.HasIndex("editsid1");
+
+                    b.ToTable("EditMuseumInfo");
+                });
+
             modelBuilder.Entity("EventReceiving", b =>
                 {
                     b.Property<int>("eventsid")
@@ -331,422 +346,100 @@ namespace Museum.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Check", b =>
+            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.DataFile", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("CheckTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Chekerid")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsChecked")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("MuseumInfoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Result")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CheckTypeId");
-
-                    b.HasIndex("Chekerid");
-
-                    b.HasIndex("MuseumInfoId");
-
-                    b.ToTable("Checks");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.CheckType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CheckTypes");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Deleting", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateOnly")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte[]>("DeletingAct")
+                    b.Property<byte[]>("actToGiftingDeed")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Description")
+                    b.Property<byte[]>("giftingDeed")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("Userid")
-                        .HasColumnType("int");
+                    b.Property<byte[]>("intoFondAct")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
-                    b.HasIndex("Userid");
-
-                    b.ToTable("Deletings");
+                    b.ToTable("DataFiles");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Edit", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ItemId")
+                    b.Property<int>("itemId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Edits");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Exhibition", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Title")
+                    b.Property<string>("descriprion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<byte[]>("image")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
 
                     b.ToTable("Exhibitions");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Exposition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Exposition");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.ItemDamage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Discovererid")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MuseumInfoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RecommendationId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Discovererid");
-
-                    b.HasIndex("MuseumInfoId");
-
-                    b.HasIndex("RecommendationId");
-
-                    b.ToTable("ItemDamages");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Location", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Box")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Closet")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsOnExhibition")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsOnExposition")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsOnStorage")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Place")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Shelf")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StorageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StorageId");
-
-                    b.ToTable("Locations");
-                });
-
             modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.MuseumInfo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("DeletingId")
+                    b.Property<int>("Exhibitionid")
                         .HasColumnType("int");
 
-                    b.Property<int>("EditId")
+                    b.Property<int>("Filesid")
                         .HasColumnType("int");
 
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int");
+                    b.Property<bool>("isOnExhibition")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("StorageConditionId")
-                        .HasColumnType("int");
+                    b.HasKey("id");
 
-                    b.HasKey("Id");
+                    b.HasIndex("Exhibitionid");
 
-                    b.HasIndex("DeletingId");
-
-                    b.HasIndex("EditId");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("StorageConditionId");
+                    b.HasIndex("Filesid");
 
                     b.ToTable("MuseumInfos");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Notes", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ExhibitionRec")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NegativeNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SafetyRec")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShortRemarks")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ToxicityRec")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransportationRec")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TreatmentRec")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notes");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Recommendation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Recommendations");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Reservation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ExhibitionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ExpositionId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("InsideWork")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("MuseumInfoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isActive")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExhibitionId");
-
-                    b.HasIndex("ExpositionId");
-
-                    b.HasIndex("MuseumInfoId");
-
-                    b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Storage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Place")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Storage");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.StorageCondition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Humidity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("InSafe")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Light")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Safe")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Temperature")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StorageConditions");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Audio", b =>
@@ -1230,103 +923,6 @@ namespace Museum.Migrations
                     b.ToTable("Structures");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.SpecFund.DragMetal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DragMetalName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Probe")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("ProbeActScan")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<float>("WeightGramm")
-                        .HasColumnType("real");
-
-                    b.Property<float>("WeightKarat")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DragMetals");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.SpecFund.SpecFund", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DragMetalId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WeaponId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DragMetalId");
-
-                    b.HasIndex("WeaponId");
-
-                    b.ToTable("SpecFunds");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.SpecFund.Weapon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AmmoName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("ExpertizionScan")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<bool>("IsAmmo")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsMuseumWeapon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPartOfWeapon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("MMG")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PartOfWeaponName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("PassportScan")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Weapons");
-                });
-
             modelBuilder.Entity("Museum.Models.Technique", b =>
                 {
                     b.Property<int>("Id")
@@ -1358,7 +954,7 @@ namespace Museum.Migrations
                     b.Property<int?>("Mediaid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MuseumInfoId")
+                    b.Property<int?>("MuseumInfoid")
                         .HasColumnType("int");
 
                     b.Property<int?>("Receivingid")
@@ -1370,7 +966,7 @@ namespace Museum.Migrations
 
                     b.HasIndex("Mediaid");
 
-                    b.HasIndex("MuseumInfoId");
+                    b.HasIndex("MuseumInfoid");
 
                     b.HasIndex("Receivingid");
 
@@ -1554,6 +1150,21 @@ namespace Museum.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("EditMuseumInfo", b =>
+                {
+                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Edit", null)
+                        .WithMany()
+                        .HasForeignKey("editsid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Museum.Models.Tabs.InsideMuseum.MuseumInfo", null)
+                        .WithMany()
+                        .HasForeignKey("editsid1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("EventReceiving", b =>
                 {
                     b.HasOne("Museum.Models.Tabs.Receiving.Event", null)
@@ -1589,130 +1200,23 @@ namespace Museum.Migrations
                     b.Navigation("Fund");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Check", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.CheckType", "CheckType")
-                        .WithMany()
-                        .HasForeignKey("CheckTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Users.User", "Cheker")
-                        .WithMany()
-                        .HasForeignKey("Chekerid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.MuseumInfo", null)
-                        .WithMany("Checks")
-                        .HasForeignKey("MuseumInfoId");
-
-                    b.Navigation("CheckType");
-
-                    b.Navigation("Cheker");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Deleting", b =>
-                {
-                    b.HasOne("Museum.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Userid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.ItemDamage", b =>
-                {
-                    b.HasOne("Museum.Models.Users.User", "Discoverer")
-                        .WithMany()
-                        .HasForeignKey("Discovererid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.MuseumInfo", null)
-                        .WithMany("ItemDamage")
-                        .HasForeignKey("MuseumInfoId");
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Recommendation", "Recommendation")
-                        .WithMany()
-                        .HasForeignKey("RecommendationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Discoverer");
-
-                    b.Navigation("Recommendation");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Location", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Storage", "Storage")
-                        .WithMany()
-                        .HasForeignKey("StorageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Storage");
-                });
-
             modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.MuseumInfo", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Deleting", "Deleting")
-                        .WithMany()
-                        .HasForeignKey("DeletingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Edit", "Edit")
-                        .WithMany()
-                        .HasForeignKey("EditId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.StorageCondition", "StorageCondition")
-                        .WithMany()
-                        .HasForeignKey("StorageConditionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Deleting");
-
-                    b.Navigation("Edit");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("StorageCondition");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Reservation", b =>
                 {
                     b.HasOne("Museum.Models.Tabs.InsideMuseum.Exhibition", "Exhibition")
                         .WithMany()
-                        .HasForeignKey("ExhibitionId")
+                        .HasForeignKey("Exhibitionid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Exposition", "Exposition")
+                    b.HasOne("Museum.Models.Tabs.InsideMuseum.DataFile", "Files")
                         .WithMany()
-                        .HasForeignKey("ExpositionId")
+                        .HasForeignKey("Filesid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.MuseumInfo", null)
-                        .WithMany("Reservations")
-                        .HasForeignKey("MuseumInfoId");
 
                     b.Navigation("Exhibition");
 
-                    b.Navigation("Exposition");
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Audio", b =>
@@ -1853,25 +1357,6 @@ namespace Museum.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.SpecFund.SpecFund", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.SpecFund.DragMetal", "DragMetal")
-                        .WithMany()
-                        .HasForeignKey("DragMetalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Tabs.SpecFund.Weapon", "Weapon")
-                        .WithMany()
-                        .HasForeignKey("WeaponId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DragMetal");
-
-                    b.Navigation("Weapon");
-                });
-
             modelBuilder.Entity("Museum.Models.UnifPassport", b =>
                 {
                     b.HasOne("Museum.Models.Tabs.Info.DetailInfo", "DetailInfo")
@@ -1884,7 +1369,7 @@ namespace Museum.Migrations
 
                     b.HasOne("Museum.Models.Tabs.InsideMuseum.MuseumInfo", "MuseumInfo")
                         .WithMany()
-                        .HasForeignKey("MuseumInfoId");
+                        .HasForeignKey("MuseumInfoid");
 
                     b.HasOne("Museum.Models.Tabs.Receiving.Receiving", "Receiving")
                         .WithMany()
@@ -1936,15 +1421,6 @@ namespace Museum.Migrations
                         .HasForeignKey("structuresid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.MuseumInfo", b =>
-                {
-                    b.Navigation("Checks");
-
-                    b.Navigation("ItemDamage");
-
-                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Media", b =>
