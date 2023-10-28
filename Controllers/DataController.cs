@@ -130,7 +130,7 @@ namespace Museum.Controllers
             return acceptances;
         }
         [HttpGet("GetObjectById")]
-        public async Task<Acceptance> GetObjectById(int id)
+        public async Task<ActionResult<Acceptance>> GetObjectById(int id)
         {
             Acceptance acceptance = await context.Acceptances
              .Where(x => x.id == id)
@@ -140,7 +140,12 @@ namespace Museum.Controllers
              .Include(x => x.unifPassport)
              .FirstOrDefaultAsync();
 
-            return acceptance;
+            if (acceptance == null)
+            {
+                return BadRequest("Об'екта з таким id не існує");
+            }
+
+            return Ok(acceptance);
         }
         [HttpDelete("DeleteObjectById")]
         public async Task<IActionResult> DeleteObjectById(int id)
@@ -154,7 +159,7 @@ namespace Museum.Controllers
         }
 
         [HttpGet("GetObjectByIdForShow")]
-        public async Task<ShowedObj> GetObjectByIdForShow(int id)
+        public async Task<ActionResult<ShowedObj>> GetObjectByIdForShow(int id)
         {
             ShowedObj obj = await context.Acceptances
               .Include(x => x.unifPassport)
@@ -169,49 +174,63 @@ namespace Museum.Controllers
               })
               .FirstOrDefaultAsync();
 
-            return obj;
+            if (obj == null)
+            {
+                return BadRequest("Об'екта з таким id не існує");
+            }
+            return Ok(obj);
         }
         [HttpGet("SearchItemsByCollectionName")]
-        public async Task<IEnumerable<ObjForRespAll>> SearchItemsByCollectionName(string name)
+        public async Task<ActionResult<IEnumerable<ObjForRespAll>>> SearchItemsByCollectionName(string name)
         {
             Collection collection = await context.Collections.FirstOrDefaultAsync(x => x.name == name);
-
-            List<ObjForRespAll> acceptances = await context.Acceptances
-                .Include(x => x.unifPassport)
-                .ThenInclude(x => x.Media)
-                .ThenInclude(x => x.Images)
-                .Include(x => x.unifPassport.DetailInfo)
-                .ThenInclude(x => x.collections)
-                .Where(x => x.unifPassport.DetailInfo.collections.Contains(collection))
-                .Select(x => new ObjForRespAll
-                {
-                    id = x.id,
-                    name = x.name,
-                    images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
-                })
-                .ToListAsync();
-
-            return acceptances;
-        }
-        [HttpGet("SearchItemsByFundName")]
-        public async Task<IEnumerable<ObjForRespAll>> SearchItemsByFundName(string name)
-        {
-            List<ObjForRespAll> acceptances = await context.Acceptances
-            .Include(x => x.unifPassport)
-            .ThenInclude(x => x.Media)
-            .ThenInclude(x => x.Images)
-            .Include(x=>x.unifPassport.DetailInfo)
-            .ThenInclude(x=>x.Fund)
-            .Where(x=>x.unifPassport.DetailInfo.Fund.name == name)
-            .Select(x => new ObjForRespAll
+            if (collection != null)
             {
-                id = x.id,
-                name = x.name,
-                images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
-            })
-            .ToListAsync();
+                List<ObjForRespAll> acceptances = await context.Acceptances
+                    .Include(x => x.unifPassport)
+                    .ThenInclude(x => x.Media)
+                    .ThenInclude(x => x.Images)
+                    .Include(x => x.unifPassport.DetailInfo)
+                    .ThenInclude(x => x.collections)
+                    .Where(x => x.unifPassport.DetailInfo.collections.Contains(collection))
+                    .Select(x => new ObjForRespAll
+                    {
+                        id = x.id,
+                        name = x.name,
+                        images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+                    })
+                    .ToListAsync();
 
-            return acceptances;
+                return acceptances;
+            }
+            return BadRequest("Колекції з такою назвою не знайдено");
+        }
+    
+        [HttpGet("SearchItemsByFundName")]
+        public async Task<ActionResult<IEnumerable<ObjForRespAll>>> SearchItemsByFundName(string name)
+        {
+            Fund fund = await context.Funds.FirstOrDefaultAsync(x => x.name == name);
+
+            if (fund != null)
+            {
+                List<ObjForRespAll> acceptances = await context.Acceptances
+                    .Include(x => x.unifPassport)
+                    .ThenInclude(x => x.Media)
+                    .ThenInclude(x => x.Images)
+                    .Include(x => x.unifPassport.DetailInfo)
+                    .ThenInclude(x => x.Fund)
+                    .Where(x => x.unifPassport.DetailInfo.Fund.id == fund.id)
+                    .Select(x => new ObjForRespAll
+                    {
+                        id = x.id,
+                        name = x.name,
+                        images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+                    })
+                    .ToListAsync();
+
+                return acceptances;
+            }
+            return BadRequest("Фонда з такою назвою не знайдено");
         }
     }
 }

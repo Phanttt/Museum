@@ -130,7 +130,7 @@ namespace Museum.Controllers
         }
 
         [HttpGet("GetMainImage")]
-        public async Task<IActionResult> GetMainImage([FromBody] int unifId)
+        public async Task<IActionResult> GetMainImage(int unifId)
         {
             UnifPassport unif = await context.UnifPassports
                 .Include(x => x.Media)

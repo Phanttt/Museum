@@ -73,5 +73,6 @@ namespace Museum.Data
 
         public DbSet<GeneralInfo> GeneralInfo { get; set; }
 
+        public DbSet<News> News { get; set; }
     }
 }
