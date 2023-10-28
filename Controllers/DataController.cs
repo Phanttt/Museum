@@ -152,35 +152,66 @@ namespace Museum.Controllers
 
             return Ok();
         }
+
         [HttpGet("GetObjectByIdForShow")]
-        public async Task<Acceptance> GetObjectByIdForShow(int id)
+        public async Task<ShowedObj> GetObjectByIdForShow(int id)
         {
-            Acceptance acceptance = await context.Acceptances
-             .Where(x => x.id == id)
-             .Include(x => x.unifPassport)
-             .Include(x => x.unifPassport.Media.Images)
-             .Include(x => x.unifPassport.Media.GeneralInfo)
-             .FirstOrDefaultAsync();
+            ShowedObj obj = await context.Acceptances
+              .Include(x => x.unifPassport)
+              .ThenInclude(x => x.Media)
+              .ThenInclude(x => x.Images)
+              .Select(x => new ShowedObj
+              {
+                  id = x.id,
+                  name = x.name,
+                  description = x.shortDescription,
+                  images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+              })
+              .FirstOrDefaultAsync();
 
-            return acceptance;
+            return obj;
         }
-        [HttpGet("SearchCollectionByName")]
-        public async Task<Collection> SearchCollectionByName(string name)
+        [HttpGet("SearchItemsByCollectionName")]
+        public async Task<IEnumerable<ObjForRespAll>> SearchItemsByCollectionName(string name)
         {
-            Collection collection = await context.Collections
-                .Where(x=>x.name == name)
-                .FirstOrDefaultAsync();
+            Collection collection = await context.Collections.FirstOrDefaultAsync(x => x.name == name);
 
-            return collection;
+            List<ObjForRespAll> acceptances = await context.Acceptances
+                .Include(x => x.unifPassport)
+                .ThenInclude(x => x.Media)
+                .ThenInclude(x => x.Images)
+                .Include(x => x.unifPassport.DetailInfo)
+                .ThenInclude(x => x.collections)
+                .Where(x => x.unifPassport.DetailInfo.collections.Contains(collection))
+                .Select(x => new ObjForRespAll
+                {
+                    id = x.id,
+                    name = x.name,
+                    images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+                })
+                .ToListAsync();
+
+            return acceptances;
         }
-        [HttpGet("SearchFundByName")]
-        public async Task<Fund> SearchFundByName(string name)
+        [HttpGet("SearchItemsByFundName")]
+        public async Task<IEnumerable<ObjForRespAll>> SearchItemsByFundName(string name)
         {
-            Fund fund = await context.Funds
-                .Where(x => x.name == name)
-                .FirstOrDefaultAsync();
+            List<ObjForRespAll> acceptances = await context.Acceptances
+            .Include(x => x.unifPassport)
+            .ThenInclude(x => x.Media)
+            .ThenInclude(x => x.Images)
+            .Include(x=>x.unifPassport.DetailInfo)
+            .ThenInclude(x=>x.Fund)
+            .Where(x=>x.unifPassport.DetailInfo.Fund.name == name)
+            .Select(x => new ObjForRespAll
+            {
+                id = x.id,
+                name = x.name,
+                images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+            })
+            .ToListAsync();
 
-            return fund;
+            return acceptances;
         }
     }
 }
