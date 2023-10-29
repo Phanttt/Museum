@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Museum.Data;
+using Museum.Data.ObjsForReceiving;
 using Museum.Models;
+using Museum.Models.Tabs.Receiving;
 
 namespace Museum.Controllers
 {
@@ -10,25 +12,31 @@ namespace Museum.Controllers
     public class NewsController : Controller
     {
         private MuseumContext context;
-
+            
         public NewsController(MuseumContext context)
         {
             this.context = context;
         }
         [HttpPost("AddNews")]
-        public async Task<News> AddNews(News news)
+        public async Task<IActionResult> AddNews(ObjNews objNews)
         {
+            News news = objNews.news;
+            news.image = objNews.image.ToArray();
             if (news.id == 0)
             {
                 news.date = DateTime.Now;
                 await context.News.AddAsync(news);
-                await context.SaveChangesAsync();
             }
             else
             {
+                News existedN = await context.News.FirstOrDefaultAsync(x => x.id == news.id);
+                news.date = existedN.date;
+                context.Entry(existedN).State = EntityState.Detached;
+
                 context.News.Update(news);
             }
-            return news;
+            await context.SaveChangesAsync();
+            return Ok();
         }
         [HttpDelete("DeleteNews")]
         public async Task<IActionResult> DeleteNews(int id)
@@ -46,6 +54,16 @@ namespace Museum.Controllers
                  .ToListAsync();
 
              return allNews;
+        }
+        [HttpGet("GetNewsById")]
+        public async Task<ActionResult<News>> GetNewsById(int id)
+        {
+            News news = await context.News.FirstOrDefaultAsync(x => x.id == id);
+            if (news == null)
+            {
+                return BadRequest("Новини не знайдено");
+            }
+            return Ok(news);
         }
     }
 }

@@ -86,9 +86,10 @@ namespace Museum.Controllers
 
         [HttpPost("AddDetailInfo")]
         public async Task<ActionResult> AddDetailInfo([FromBody] ObjForDetail obj)
-            {
+        {
             UnifPassport passport = await context.UnifPassports.FindAsync(obj.unifId);
             DetailInfo detailInfo = obj.detail;
+
             context.Entry(detailInfo.Fund).State = EntityState.Unchanged;
             foreach (var group in detailInfo.groups)
             {
@@ -106,9 +107,31 @@ namespace Museum.Controllers
             {
                 context.Entry(group).State = EntityState.Unchanged;
             }
-            passport.DetailInfo = detailInfo; 
 
-            await context.DetailInfos.AddAsync(detailInfo);
+            if (detailInfo.id == 0)
+            {
+                passport.DetailInfo = detailInfo;
+
+                await context.DetailInfos.AddAsync(detailInfo);
+            }
+            else
+            {
+                DetailInfo existedDetail = await context.DetailInfos
+                    .Include(x => x.keyWords)
+                    .Include(x => x.tags)
+                    .Include(x => x.collections)
+                    .Include(x => x.groups)
+                    .FirstOrDefaultAsync(x => x.id == detailInfo.id);
+
+                existedDetail.Fund = detailInfo.Fund;
+                existedDetail.keyWords = detailInfo.keyWords;
+                existedDetail.groups = detailInfo.groups;
+                existedDetail.collections = detailInfo.collections;
+                existedDetail.tags = detailInfo.tags;
+
+                context.DetailInfos.Update(existedDetail);
+            }
+
             await context.SaveChangesAsync();
             return Ok(detailInfo);
         }

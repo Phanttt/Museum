@@ -8,15 +8,10 @@ namespace Museum.Models.Tabs.Info
     {
         [Key]
         public int id { get; set; }
-        [Required]
-        public Fund Fund { get; set; }
-        [Required]
-        public ICollection<Collection> collections { get; set; }
-        [Required]
-        public ICollection<Group> groups { get; set; }
-        [Required] 
-        public ICollection<KeyWord> keyWords { get; set; }
-        [Required]
-        public ICollection<Tag> tags {get; set; }
+        public Fund? Fund { get; set; }
+        public ICollection<Collection>? collections { get; set; }
+        public ICollection<Group>? groups { get; set; }
+        public ICollection<KeyWord>? keyWords { get; set; }
+        public ICollection<Tag>? tags {get; set; }
     }
 }
