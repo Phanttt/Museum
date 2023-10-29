@@ -83,7 +83,30 @@ namespace Museum.Controllers
             await context.SaveChangesAsync();
             return Ok(keyWord);
         }
+        [HttpPost("AddFund")]
+        public async Task<ActionResult<Fund>> AddFund([FromBody] Fund fund)
+        {
+            await context.Funds.AddAsync(fund);
+            await context.SaveChangesAsync();
+            return Ok(fund);
+        }
+        [HttpDelete("DeleteCollectionById")]
+        public async Task<ActionResult> DeleteCollectionById(int id) 
+        {
+            Collection col = await context.Collections.FirstAsync(x=>x.id == id);
+            context.Collections.Remove(col);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
 
+        [HttpDelete("DeleteFundsById")]
+        public async Task<ActionResult> DeleteFundsById(int id)
+        {
+            Fund fund = await context.Funds.FirstAsync(x => x.id == id);
+            context.Funds.Remove(fund);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
         [HttpPost("AddDetailInfo")]
         public async Task<ActionResult> AddDetailInfo([FromBody] ObjForDetail obj)
         {
