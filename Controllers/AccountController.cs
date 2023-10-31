@@ -74,9 +74,10 @@ namespace Museum.Controllers
         {
             var claims = new List<Claim>
                 {
-                    new Claim("Id", Convert.ToString(user.id)),
-                    new Claim("Name", Convert.ToString(user.name)),
-                    new Claim("Login", Convert.ToString(user.name))
+                    new Claim("id", Convert.ToString(user.id)),
+                    new Claim("name", Convert.ToString(user.name)),
+                    new Claim("login", Convert.ToString(user.name)),
+                    new Claim("roleId", Convert.ToString(user.Role.id))
                 };
             ClaimsIdentity claimsIdentity =
             new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
