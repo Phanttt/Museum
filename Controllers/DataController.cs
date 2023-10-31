@@ -172,7 +172,7 @@ namespace Museum.Controllers
                   description = x.shortDescription,
                   images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
               })
-              .FirstOrDefaultAsync();
+              .FirstOrDefaultAsync(x=>x.id == id);
 
             if (obj == null)
             {

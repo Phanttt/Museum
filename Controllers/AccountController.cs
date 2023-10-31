@@ -40,13 +40,13 @@ namespace Museum.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult<string>> Register(User data)
         {
-           
-            
+            context.Entry(data.Role).State = EntityState.Unchanged;
+
             User user = new User()
             {               
                 name = data.name,
                 password = data.password,   
-
+                Role = data.Role,
             };
             context.Users.Add(user);
             await context.SaveChangesAsync();
