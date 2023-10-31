@@ -7,6 +7,7 @@ namespace Museum.Data.ObjsForMediaRequests
     {
         public int id { get; set; }
         public string name { get; set; }
-        public ICollection<Image> images { get; set; }
+        public Image images { get; set; }
+        public string description { get; set; } 
     }
 }

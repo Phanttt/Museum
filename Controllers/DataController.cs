@@ -123,7 +123,7 @@ namespace Museum.Controllers
              {
                  id = x.id,
                  name = x.name,
-                 images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+                 images = x.unifPassport.Media.Images.Where(image => image.isMain).FirstOrDefault()
              })
              .ToListAsync();
 
@@ -197,7 +197,8 @@ namespace Museum.Controllers
                     {
                         id = x.id,
                         name = x.name,
-                        images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+						description = x.shortDescription,
+                        images = x.unifPassport.Media.Images.Where(image => image.isMain).FirstOrDefault(),
                     })
                     .ToListAsync();
 
@@ -224,7 +225,7 @@ namespace Museum.Controllers
                     {
                         id = x.id,
                         name = x.name,
-                        images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+                        images = x.unifPassport.Media.Images.Where(image => image.isMain).FirstOrDefault()
                     })
                     .ToListAsync();
 
