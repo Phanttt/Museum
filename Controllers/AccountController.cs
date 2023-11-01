@@ -24,9 +24,11 @@ namespace Museum.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<string>> Login([FromBody] LogData data)
         {
-            User user = await context.Users.Where(e=>e.name.Equals(data.Login) && e.password.Equals(data.Password)).FirstOrDefaultAsync();
-            
-            if (user != null)
+            User user = await context.Users.Include(u => u.Role).Where(e=>e.name.Equals(data.Login) && e.password.Equals(data.Password)).FirstOrDefaultAsync();
+
+			Role userRole = context.Roles.Where(x => x.id == user.Role.id).FirstOrDefault();
+
+			if (user != null)
             {
                 string jwt = CreateToken(user);
                 return Ok(jwt);
@@ -38,16 +40,18 @@ namespace Museum.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<ActionResult<string>> Register(User data)
+        public async Task<ActionResult<string>> Register(UserAccept data)
         {
-            context.Entry(data.Role).State = EntityState.Unchanged;
 
-            User user = new User()
+            Role userRole = context.Roles.Where(x => x.id == data.roleId).FirstOrDefault();
+			//context.Entry(data.Role).State = EntityState.Unchanged;
+
+			User user = new User()
             {               
                 name = data.name,
                 password = data.password,   
-                Role = data.Role,
-            };
+                Role = userRole,
+			};
             context.Users.Add(user);
             await context.SaveChangesAsync();
 

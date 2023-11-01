@@ -2,12 +2,12 @@
 
 namespace Museum.Models.Users
 {
-    public class User
-    {
+	public class UserAccept
+	{
 		[Key]
 		public int id { get; set; }
 		public string name { get; set; }
 		public string? password { get; set; }
-		public Role Role { get; set; }
+		public int roleId { get; set; }
 	}
 }
