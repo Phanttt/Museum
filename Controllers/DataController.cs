@@ -170,7 +170,7 @@ namespace Museum.Controllers
                   id = x.id,
                   name = x.name,
                   description = x.shortDescription,
-                  images = x.unifPassport.Media.Images.Where(image => image.isMain).ToList()
+                  images = x.unifPassport.Media.Images.ToList()
               })
               .FirstOrDefaultAsync(x=>x.id == id);
 
