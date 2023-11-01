@@ -55,6 +55,16 @@ namespace Museum.Controllers
 
              return allNews;
         }
+        [HttpGet("Get5LatestNews")]
+        public async Task<IEnumerable<News>> Get5LatestNews()
+        {
+            List<News> top5News = await context.News
+                .OrderByDescending(x => x.date)
+                .Take(5)
+                .ToListAsync();
+
+            return top5News;
+        }
         [HttpGet("GetNewsById")]
         public async Task<ActionResult<News>> GetNewsById(int id)
         {
