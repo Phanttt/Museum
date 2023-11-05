@@ -127,21 +127,6 @@ namespace Museum.Migrations
                     b.ToTable("DetailInfoTag");
                 });
 
-            modelBuilder.Entity("EditInsideInfo", b =>
-                {
-                    b.Property<int>("editsid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("editsid1")
-                        .HasColumnType("int");
-
-                    b.HasKey("editsid", "editsid1");
-
-                    b.HasIndex("editsid1");
-
-                    b.ToTable("EditInsideInfo");
-                });
-
             modelBuilder.Entity("EventReceiving", b =>
                 {
                     b.Property<int>("eventsid")
@@ -395,26 +380,6 @@ namespace Museum.Migrations
                     b.ToTable("DataFiles");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Edit", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("itemId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Edits");
-                });
-
             modelBuilder.Entity("Museum.Models.Tabs.InsideMuseum.Exhibition", b =>
                 {
                     b.Property<int>("id")
@@ -459,74 +424,6 @@ namespace Museum.Migrations
                     b.HasIndex("exhibitionid");
 
                     b.ToTable("InsideInfos");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Audio", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("MediaId")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("data")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("link")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("MediaId");
-
-                    b.ToTable("Audios");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Document", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("MediaId")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("data")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("link")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("MediaId");
-
-                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.GeneralInfo", b =>
@@ -623,40 +520,6 @@ namespace Museum.Migrations
                     b.HasIndex("GeneralInfoid");
 
                     b.ToTable("Medias");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Video", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("MediaId")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("data")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("link")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("MediaId");
-
-                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Receiving.Currency", b =>
@@ -1017,7 +880,7 @@ namespace Museum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Roleid")
+                    b.Property<int>("Roleid")
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -1169,21 +1032,6 @@ namespace Museum.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EditInsideInfo", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.Edit", null)
-                        .WithMany()
-                        .HasForeignKey("editsid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Museum.Models.Tabs.InsideMuseum.InsideInfo", null)
-                        .WithMany()
-                        .HasForeignKey("editsid1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("EventReceiving", b =>
                 {
                     b.HasOne("Museum.Models.Tabs.Receiving.Event", null)
@@ -1232,28 +1080,6 @@ namespace Museum.Migrations
                     b.Navigation("exhibition");
                 });
 
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Audio", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", "Media")
-                        .WithMany("Audios")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Document", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", "Media")
-                        .WithMany("Documents")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Media");
-                });
-
             modelBuilder.Entity("Museum.Models.Tabs.Media.GeneralInfo", b =>
                 {
                     b.HasOne("Museum.Models.Tabs.Media.ImageRight", "ImageRight")
@@ -1281,17 +1107,6 @@ namespace Museum.Migrations
                         .HasForeignKey("GeneralInfoid");
 
                     b.Navigation("GeneralInfo");
-                });
-
-            modelBuilder.Entity("Museum.Models.Tabs.Media.Video", b =>
-                {
-                    b.HasOne("Museum.Models.Tabs.Media.Media", "Media")
-                        .WithMany("Videos")
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("Museum.Models.Tabs.Receiving.Event", b =>
@@ -1401,7 +1216,9 @@ namespace Museum.Migrations
                 {
                     b.HasOne("Museum.Models.Users.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("Roleid");
+                        .HasForeignKey("Roleid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Role");
                 });
@@ -1438,13 +1255,7 @@ namespace Museum.Migrations
 
             modelBuilder.Entity("Museum.Models.Tabs.Media.Media", b =>
                 {
-                    b.Navigation("Audios");
-
-                    b.Navigation("Documents");
-
                     b.Navigation("Images");
-
-                    b.Navigation("Videos");
                 });
 #pragma warning restore 612, 618
         }

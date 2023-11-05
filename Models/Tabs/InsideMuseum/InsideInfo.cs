@@ -7,7 +7,6 @@ namespace Museum.Models.Tabs.InsideMuseum
         [Key]
         public int id { get; set; }
         public Exhibition? exhibition { get; set; }
-        public ICollection<Edit>? edits { get; set; }
         public DataFile? Files { get; set; }
     }
 }

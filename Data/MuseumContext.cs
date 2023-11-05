@@ -37,16 +37,12 @@ namespace Museum.Data
         public DbSet<KeyWord> KeyWords { get; set; }
         public DbSet<Tag> Tags{ get; set; }
 
-        public DbSet<Edit> Edits{ get; set; }
         public DbSet<Exhibition> Exhibitions{ get; set; }
         public DbSet<InsideInfo> InsideInfos { get; set; }
         public DbSet<DataFile> DataFiles { get; set; }
 
-        public DbSet<Audio> Audios { get; set; }
-        public DbSet<Document> Documents { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<ImageRight> ImageRights { get; set; }
-        public DbSet<Video> Videos { get; set; }
         public DbSet<Media> Medias { get; set; }
 
         public DbSet<Event> Events { get; set; }
