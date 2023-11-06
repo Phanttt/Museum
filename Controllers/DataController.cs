@@ -119,6 +119,7 @@ namespace Museum.Controllers
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)
+             .Where(x=> x.unifPassport.Media.Images.Any() && !string.IsNullOrEmpty(x.shortDescription))
              .Select(x=> new ObjForRespAll
              {
                  id = x.id,
@@ -193,7 +194,9 @@ namespace Museum.Controllers
                     .ThenInclude(x => x.Images)
                     .Include(x => x.unifPassport.DetailInfo)
                     .ThenInclude(x => x.collections)
-                    .Where(x => x.unifPassport.DetailInfo.collections.Contains(collection))
+                    .Where(x => x.unifPassport.DetailInfo.collections.Contains(collection) &&
+                        x.unifPassport.Media.Images.Any() &&
+                        !string.IsNullOrEmpty(x.shortDescription))
                     .Select(x => new ObjForRespAll
                     {
                         id = x.id,
@@ -221,7 +224,9 @@ namespace Museum.Controllers
                     .ThenInclude(x => x.Images)
                     .Include(x => x.unifPassport.DetailInfo)
                     .ThenInclude(x => x.Fund)
-                    .Where(x => x.unifPassport.DetailInfo.Fund.id == fund.id)
+                    .Where(x => x.unifPassport.DetailInfo.Fund.id == fund.id && 
+                        x.unifPassport.Media.Images.Any() &&
+                        !string.IsNullOrEmpty(x.shortDescription))
                     .Select(x => new ObjForRespAll
                     {
                         id = x.id,
