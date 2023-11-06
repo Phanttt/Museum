@@ -119,7 +119,6 @@ namespace Museum.Controllers
              .Include(x => x.unifPassport)
              .ThenInclude(x => x.Media)
              .ThenInclude(x => x.Images)
-             .Where(x=> x.unifPassport.Media.Images.Any() && !string.IsNullOrEmpty(x.shortDescription))
              .Select(x=> new ObjForRespAll
              {
                  id = x.id,
@@ -128,6 +127,25 @@ namespace Museum.Controllers
                  images = x.unifPassport.Media.Images.Where(image => image.isMain).FirstOrDefault()
              })
              .ToListAsync();
+
+            return acceptances;
+        }
+        [HttpGet("GetAllObjectsForShow")]
+        public async Task<IEnumerable<ObjForRespAll>> GetAllObjectsForShow()
+        {
+            List<ObjForRespAll> acceptances = await context.Acceptances
+            .Include(x => x.unifPassport)
+            .ThenInclude(x => x.Media)
+            .ThenInclude(x => x.Images)
+            .Where(x => x.unifPassport.Media.Images.Any() && !string.IsNullOrEmpty(x.shortDescription))
+            .Select(x => new ObjForRespAll
+            {
+                id = x.id,
+                name = x.name,
+                description = x.shortDescription,
+                images = x.unifPassport.Media.Images.Where(image => image.isMain).FirstOrDefault()
+            })
+            .ToListAsync();
 
             return acceptances;
         }

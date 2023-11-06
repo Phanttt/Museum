@@ -14,6 +14,8 @@ namespace Museum.Models
         [Required]
         public string name { get; set; }
         [Required]
+        [Column(TypeName = "VARCHAR")]
+        [MaxLength(255)]
         public string shortDescription { get; set; }
         [Required]
         public string type { get; set; }
