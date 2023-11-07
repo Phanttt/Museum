@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Museum.Data;
 
@@ -11,9 +12,11 @@ using Museum.Data;
 namespace Museum.Migrations
 {
     [DbContext(typeof(MuseumContext))]
-    partial class MuseumContextModelSnapshot : ModelSnapshot
+    [Migration("20231107082517_ROwInNews")]
+    partial class ROwInNews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,7 +174,6 @@ namespace Museum.Migrations
 
                     b.Property<string>("shortDescription")
                         .IsRequired()
-                        .HasMaxLength(3999)
                         .HasColumnType("NVARCHAR");
 
                     b.Property<string>("size")
@@ -225,7 +227,7 @@ namespace Museum.Migrations
 
                     b.Property<string>("description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("NVARCHAR");
 
                     b.Property<byte[]>("image")
                         .HasColumnType("varbinary(max)");
