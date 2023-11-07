@@ -171,7 +171,6 @@ namespace Museum.Migrations
 
                     b.Property<string>("shortDescription")
                         .IsRequired()
-                        .HasMaxLength(3999)
                         .HasColumnType("NVARCHAR");
 
                     b.Property<string>("size")
@@ -225,7 +224,7 @@ namespace Museum.Migrations
 
                     b.Property<string>("description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("NVARCHAR");
 
                     b.Property<byte[]>("image")
                         .HasColumnType("varbinary(max)");

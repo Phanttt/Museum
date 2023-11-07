@@ -161,15 +161,17 @@ namespace Museum.Controllers
         [HttpGet("GetDetailInfo")]
         public async Task<ActionResult<DetailInfo>> GetDetailInfoById(int id)
         {
-            DetailInfo? info = await context.DetailInfos
-                .Include(x => x.groups)
-                .Include(x => x.keyWords)
-                .Include(x => x.tags)
-                .Include(x => x.Fund)
-                .Include(x => x.collections)
-                .FirstOrDefaultAsync(x => x.id == id);
+            UnifPassport unif = await context.UnifPassports
+                .Include(x => x.DetailInfo)
+                .Include(x => x.DetailInfo.groups)
+                .Include(x => x.DetailInfo.keyWords)
+                .Include(x => x.DetailInfo.tags)
+                .Include(x => x.DetailInfo.Fund)
+                .Include(x => x.DetailInfo.collections)
+                .FirstOrDefaultAsync(x => x.Id == id);
+       
 
-            return info;
+            return unif.DetailInfo;
         }
     }
 }

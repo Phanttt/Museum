@@ -142,15 +142,15 @@ namespace Museum.Controllers
             }
 
 
-            if (receiveObj.receiptAct.Count != 0)
+            if (receiveObj.receiptAct != null && receiveObj.receiptAct.Count != 0)
             {
                 receiving.receiptAct = receiveObj.receiptAct.ToArray();
             }
-            if (receiveObj.receiptAgreement.Count != 0)
+            if (receiveObj.receiptAgreement != null &&  receiveObj.receiptAgreement.Count != 0)
             {
                 receiving.receiptAgreement = receiveObj.receiptAgreement.ToArray();
             }
-            if (receiveObj.receiptAgreement.Count != 0)
+            if (receiveObj.priceAct != null &&  receiveObj.priceAct.Count != 0)
             {
                 receiving.priceAct = receiveObj.priceAct.ToArray();
             }

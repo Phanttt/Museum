@@ -258,5 +258,25 @@ namespace Museum.Controllers
             }
             return BadRequest("Фонда з такою назвою не знайдено");
         }
+
+        [HttpGet("SearchOblectByName")]
+        public async Task<IEnumerable<ObjForRespAll>> SearchOblectByName(string name)
+        {
+            List<ObjForRespAll> acceptances = await context.Acceptances
+            .Include(x => x.unifPassport)
+            .ThenInclude(x => x.Media)
+            .ThenInclude(x => x.Images)
+            .Where(x => x.name.ToLower().Contains(name.ToLower()) && x.unifPassport.Media.Images.Any() && !string.IsNullOrEmpty(x.shortDescription))
+            .Select(x => new ObjForRespAll
+            {
+                id = x.id,
+                name = x.name,
+                description = x.shortDescription,
+                images = x.unifPassport.Media.Images.Where(image => image.isMain).FirstOrDefault()
+            })
+            .ToListAsync();
+
+            return acceptances;
+        }
     }
 }

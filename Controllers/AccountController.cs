@@ -44,7 +44,6 @@ namespace Museum.Controllers
         {
 
             Role userRole = context.Roles.Where(x => x.id == data.roleId).FirstOrDefault();
-			//context.Entry(data.Role).State = EntityState.Unchanged;
 
 			User user = new User()
             {               

@@ -21,7 +21,16 @@ namespace Museum.Controllers
         public async Task<InsideInfo> AddInsideInfo(InsideInfoObj insideInfoObj)
         {
             InsideInfo insideInfo = insideInfoObj.InsideInfo;
-            context.Entry(insideInfo.exhibition).State = EntityState.Unchanged;
+
+            if (insideInfo.exhibition.id == 0)
+            {
+                context.Entry(insideInfo).State = EntityState.Modified;
+                insideInfo.exhibition = null;
+            }
+            else
+            {
+                context.Entry(insideInfo.exhibition).State = EntityState.Unchanged;
+            }
 
             UnifPassport unifPassport = await context.UnifPassports.FindAsync(insideInfoObj.unifId);
             unifPassport.InsideInfo = insideInfo;
@@ -43,7 +52,8 @@ namespace Museum.Controllers
         [HttpGet("GetExhibitions")]
         public async Task<IEnumerable<Exhibition>> GetExhibitions()
         {
-            return await context.Exhibitions.ToListAsync();
+            List<Exhibition> exhibitions = await context.Exhibitions.ToListAsync();
+            return exhibitions;
         }
         [HttpGet("GetDocs")]
         public async Task<DataFile> GetDocs(int unifId)
